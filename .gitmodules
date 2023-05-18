@@ -1,0 +1,12 @@
+[submodule "smaz"]
+	path = smaz
+	url = https://github.com/antirez/smaz.git
+[submodule "getopt-cpp"]
+	path = getopt-cpp
+	url = https://github.com/607011/getopt-cpp.git
+[submodule "json"]
+	path = json
+	url = https://github.com/nlohmann/json.git
+[submodule "glob"]
+	path = glob
+	url = https://github.com/sryze/glob.git
