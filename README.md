@@ -1,0 +1,2 @@
+# txtz
+Short string compression
