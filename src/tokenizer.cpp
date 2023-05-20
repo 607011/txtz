@@ -1,3 +1,7 @@
+/*
+    Copyright (c) 2023 Oliver Lau
+*/
+
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
@@ -14,18 +18,18 @@
 
 #include <boost/locale.hpp>
 
-#include "nlohmann/json.hpp"
-#include "glob.h"
+#include <nlohmann/json.hpp>
+#include <glob.h>
+
+#include "shannon-fano.hpp"
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 namespace loc = boost::locale;
+namespace sf = shannon_fano;
 
-struct ngram_t
-{
-    std::string token{};
-    std::size_t count{};
-};
+constexpr std::size_t max_codepoints_per_grapheme = 4;
+constexpr std::size_t max_gram = 4;
 
 int main(int argc, char *argv[])
 {
@@ -35,12 +39,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
     fs::path path = argv[1];
-
     std::unordered_map<std::string, std::size_t> monograms;
-    std::unordered_map<std::string, std::size_t> digrams;
-    std::unordered_map<std::string, std::size_t> trigrams;
-    std::unordered_map<std::string, std::size_t> quadgrams;
-
     std::array<char, 4> progress_indicator{'-', '\\', '|', '/'};
     int pi_idx = 0;
     auto filenames = glob::glob(argv[1]);
@@ -69,42 +68,20 @@ int main(int argc, char *argv[])
                 continue;
             std::cout << progress_indicator.at((pi_idx++) % progress_indicator.size()) << "\u001b[D" << std::flush;
             std::string u8_text = a.at("text_clean").get<std::string>();
-            std::regex_replace(u8_text, std::regex("(\\n\\r|\\n)"), " ");
-            constexpr std::size_t max_gram = 4;
-            if (u8_text.size() < 4*max_gram)
+            u8_text = std::regex_replace(u8_text, std::regex("(\n\r|\r\n|\n)+"), " ");
+            if (u8_text.size() < max_codepoints_per_grapheme * max_gram)
                 continue;
             loc::generator gen;
             loc::boundary::ssegment_index map(loc::boundary::character, u8_text.begin(), u8_text.end(), gen("de_DE.UTF-8"));
-            loc::boundary::ssegment_index::iterator e = map.end()-- -- -- --;
+            loc::boundary::ssegment_index::iterator e = map.end();
             for (loc::boundary::ssegment_index::iterator it = map.begin(); it != e; ++it)
             {
                 monograms[it->str()] += 1;
-                digrams[it->str() + std::next(it)->str()] += 1;
-                trigrams[it->str() + std::next(it)->str() + std::next(std::next(it))->str()] += 1;
-                quadgrams[it->str() + std::next(it)->str() + std::next(std::next(it))->str() + std::next(std::next(std::next(it)))->str()] += 1;
             }
         }
     }
 
-    using pair_type = decltype(trigrams)::value_type;
-    auto max_quadgram = std::max_element(
-        std::begin(quadgrams), std::end(quadgrams),
-        [](const pair_type &p1, const pair_type &p2)
-        {
-            return p1.second < p2.second;
-        });
-    auto max_trigram = std::max_element(
-        std::begin(trigrams), std::end(trigrams),
-        [](const pair_type &p1, const pair_type &p2)
-        {
-            return p1.second < p2.second;
-        });
-    auto max_digram = std::max_element(
-        std::begin(digrams), std::end(digrams),
-        [](const pair_type &p1, const pair_type &p2)
-        {
-            return p1.second < p2.second;
-        });
+    using pair_type = decltype(monograms)::value_type;
     auto max_monogram = std::max_element(
         std::begin(monograms), std::end(monograms),
         [](const pair_type &p1, const pair_type &p2)
@@ -117,35 +94,56 @@ int main(int argc, char *argv[])
 
     std::cout
         << '\n'
-        << std::setw(6) << quadgrams.size() << " quadgrams; max. `" << max_quadgram->first << "`: " << max_quadgram->second << "\n"
-        << std::setw(6) << trigrams.size() << " trigrams;  max. `" << max_trigram->first << "` : " << max_trigram->second << "\n"
-        << std::setw(6) << digrams.size() << " digrams;   max. `" << max_digram->first << "`  : " << max_digram->second << "\n"
         << std::setw(6) << monograms.size() << " monograms; max. `" << max_monogram->first << "`   : " << max_monogram->second << "\n"
         << '\n';
 
-    std::vector<ngram_t> ngrams;
-    std::transform(std::begin(quadgrams), std::end(quadgrams), std::back_inserter(ngrams), [](decltype(quadgrams)::value_type it)
-                   { return ngram_t{it.first, 4 * it.second}; });
-    std::transform(std::begin(trigrams), std::end(trigrams), std::back_inserter(ngrams), [](decltype(trigrams)::value_type it)
-                   { return ngram_t{it.first, 3 * it.second}; });
-    std::transform(std::begin(digrams), std::end(digrams), std::back_inserter(ngrams), [](decltype(digrams)::value_type it)
-                   { return ngram_t{it.first, 2 * it.second}; });
-    std::transform(std::begin(monograms), std::end(monograms), std::back_inserter(ngrams), [](decltype(monograms)::value_type it)
-                   { return ngram_t{it.first, it.second}; });
-    std::sort(std::begin(ngrams), std::end(ngrams), [](decltype(ngrams)::value_type a, decltype(ngrams)::value_type b)
-              { return a.count > b.count; });
-
-    json result;
-    int n = 254;
-    for (auto const &ngram : ngrams)
+    for (int i = 0; i < 256; ++i)
     {
-        if (n-- > 0)
-            std::cout << ngram.token << ": " << ngram.count << '\n';
-        result[ngram.token] = ngram.count;
+        char const c = static_cast<char>(i);
+        std::string const token(&c, 1);
+        if (monograms.find(token) == monograms.end())
+        {
+            monograms[token] = 1;
+        }
     }
 
-    std::ofstream out("result.json", std::ios::binary | std::ios::trunc);
+    std::vector<sf::ngram_t> ngrams;
+    std::transform(std::begin(monograms), std::end(monograms), std::back_inserter(ngrams), [](decltype(monograms)::value_type it) -> sf::ngram_t
+                   { return sf::ngram_t{it.first, it.second}; });
+    std::sort(std::begin(ngrams), std::end(ngrams), [](decltype(ngrams)::value_type a, decltype(ngrams)::value_type b)
+              { return a.weight > b.weight; });
+    sf::update(ngrams);
+
+    std::ostringstream cpp;
+    cpp << "#include <string>\n"
+        << "#include <unordered_map>\n"
+        << "#include \"shannon-fano.hpp\"\n"
+        << "namespace shannon_fano\n"
+        << "{\n"
+        << "  std::unordered_map<std::string, code> compression_table = {\n";
+    json result;
+    for (auto const &ngram : ngrams)
+    {
+        std::cout << ngram.token << ": " << ngram.weight << '\n';
+        result["decompress"][ngram.c.str()] = util::escaped(ngram.token);
+        result["compress"][util::escaped(ngram.token)] = json::object_t{
+            {"l", ngram.c.length()},
+            {"v", ngram.c.bits()}};
+        cpp << "    /* " << ngram.token << " */ {\"" << util::escaped(ngram.token) << "\", code(" << std::dec << ngram.c.length() << ", 0b" << ngram.c.str() << ")},\n";
+    }
+    cpp << "  };\n"
+        << "}\n";
+
+    for (auto const &ngram : ngrams)
+    {
+        std::cout << ngram.token << ": " << ngram.weight << ' ' << ngram.c << '\n';
+    }
+
+    std::ofstream out("de_DE-utf8.json", std::ios::binary | std::ios::trunc);
     out << result.dump();
+
+    std::ofstream cppout("../src/de_DE-utf8.cpp", std::ios::binary | std::ios::trunc);
+    cppout << cpp.str();
 
     return EXIT_SUCCESS;
 }
