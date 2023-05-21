@@ -8,7 +8,7 @@
 
 #include "util.hpp"
 
-template <typename CodeT, typename LengthT, typename ValueT>
+template <typename CodeT, typename LengthT, typename ValueT, typename StoreT>
 class bintree
 {
 public:
@@ -24,14 +24,14 @@ public:
     {
     }
 
-    std::string decompress(std::vector<uint8_t> const &compressed)
+    std::string decompress(std::vector<StoreT> const &compressed)
     {
-        uint8_t length = compressed.front();
-        std::vector<uint8_t>::const_iterator it = std::next(compressed.cbegin());
+        StoreT length = compressed.front();
+        auto it = std::next(compressed.cbegin());
         std::ostringstream oss;
         std::shared_ptr<node> n = root_;
         int bit_idx = 0;
-        uint8_t byte = *it;
+        StoreT byte = *it;
         while (length > 0 && it != compressed.cend())
         {
             if ((byte & 0b10000000) == 0)
@@ -40,12 +40,6 @@ public:
                 {
                     n = n->left;
                 }
-                else
-                {
-                    oss << n->value;
-                    --length;
-                    n = root_;
-                }
             }
             else
             {
@@ -53,12 +47,12 @@ public:
                 {
                     n = n->right;
                 }
-                else
-                {
-                    oss << n->value;
-                    --length;
-                    n = root_;
-                }
+            }
+            if (!n->left && !n->right)
+            {
+                oss << n->value;
+                --length;
+                n = root_;
             }
             if (++bit_idx == 8)
             {
@@ -73,7 +67,7 @@ public:
         return oss.str();
     }
 
-    void append(CodeT code, LengthT length, std::string const &token)
+    void append(CodeT code, LengthT length, ValueT const &token)
     {
         constexpr CodeT mask = (1U << (8 * sizeof(CodeT) - 1));
         code <<= (8 * sizeof(CodeT) - length);
@@ -101,27 +95,51 @@ public:
         n->value = token;
     }
 
-    void print(std::shared_ptr<node> root) const
+    bool find(ValueT const &token, std::shared_ptr<node> root)
     {
         if (!root->left && !root->right)
         {
-            std::cout << ' ' << util::escaped(root->value) << ' ';
+            return root->value == token;
         }
-        if (root->left)
+        if (find(token, root->left))
         {
-            std::cout << '0';
+            return true;
+        }
+        if (find(token, root->right))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool find(ValueT const &token)
+    {
+        return find(token, root_);
+    }
+
+    void print(std::shared_ptr<node> root, std::ostream &out) const
+    {
+        if (!root->left && !root->right)
+        {
+            out << ' ' << util::escaped(root->value) << '\n';
+        }
+        if (root->left, out)
+        {
+            out << '0';
             print(root->left);
         }
         if (root->right)
         {
-            std::cout << '1';
-            print(root->right);
+            out << '1';
+            print(root->right, out);
         }
     }
 
-    void print() const
+    std::string print() const
     {
-        print(root_);
+        std::ostringstream oss;
+        print(root_, oss);
+        return oss.str();
     }
 
 private:

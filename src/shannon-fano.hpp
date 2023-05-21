@@ -94,7 +94,7 @@ namespace shannon_fano
     class txtz
     {
         std::unordered_map<std::string, code> compress_table_;
-        bintree<code_t, uint32_t, std::string> decompress_tree_;
+        bintree<code_t, uint32_t, std::string, uint8_t> decompress_tree_;
 
     public:
         explicit txtz(std::unordered_map<std::string, code> const &table)
@@ -105,6 +105,7 @@ namespace shannon_fano
                 decompress_tree_.append(it.second.bits(), it.second.length(), it.first);
             }
         }
+
         std::vector<uint8_t> compress(std::string const &str, std::size_t &size)
         {
             std::vector<uint8_t> data;
@@ -151,10 +152,12 @@ namespace shannon_fano
             size = num_bits;
             return data;
         }
+
         std::string decompress(std::vector<uint8_t> const &data)
         {
             return decompress_tree_.decompress(data);
         }
+
         std::string decompress(std::vector<char> const &data)
         {
             std::vector<uint8_t> byte_data(data.size());

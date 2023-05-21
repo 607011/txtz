@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
             sf::txtz z(sf::compression_table);
             auto out_buf = z.decompress(in_buf);
             std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            std::cout << (8 * in_buf.size()) << " -> " << out_buf.size() << '\n';
+            std::cout << (8 * in_buf.size()) << " -> " << (8 * out_buf.size()) << '\n';
             break;
         }
         case SMAZ:

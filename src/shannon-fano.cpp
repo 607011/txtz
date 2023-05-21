@@ -9,10 +9,10 @@ namespace shannon_fano
             p[l].c = c;
             return;
         }
-        std::size_t pl = l;
-        std::size_t pr = r;
-        std::size_t wl = p[pl].weight;
-        std::size_t wr = p[pr].weight;
+        auto pl = l;
+        auto pr = r;
+        auto wl = p[pl].weight;
+        auto wr = p[pr].weight;
         for (;;)
         {
             while (wr < wl && pr != pl + 1)
