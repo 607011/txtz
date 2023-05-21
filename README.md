@@ -12,11 +12,32 @@ THIS IS WORK IN PROGRESS. DO NOT EXPECT ANYTHING USEFUL IN THIS REPO AT THE MOME
 
 ## Build 
 
-### Linux, macOS
+### Linux
+
+Ubuntu
+
+```
+sudo apt install g++ libboost-all-dev
+```
 
 ```
 git clone https://github.com/607011/txtz.git
 cd txtz
+git submodule update init
+git submodule update --remote --merge
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake --build .
+```
+
+### macOS
+
+```
+git clone https://github.com/607011/txtz.git
+cd txtz
+git submodule update init
+git submodule update --remote --merge
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
