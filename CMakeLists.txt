@@ -42,8 +42,8 @@ add_executable(txtz
   smaz/smaz.c
 )
 
-add_executable(tokenizer
-  src/tokenizer.cpp
+add_executable(mapbuilder
+  src/mapbuilder.cpp
   src/shannon-fano.cpp
   src/util.cpp
   glob/glob.cpp
@@ -53,7 +53,7 @@ target_link_libraries(txtz
 	${Boost_LIBRARIES}
 )
 
-target_link_libraries(tokenizer
+target_link_libraries(mapbuilder
 	${Boost_LIBRARIES}
 )
 
@@ -61,9 +61,9 @@ if (UNIX)
 	add_custom_command(TARGET txtz 
 	POST_BUILD
 	COMMAND strip txtz)
-	add_custom_command(TARGET tokenizer 
+	add_custom_command(TARGET mapbuilder 
 	POST_BUILD
-	COMMAND strip tokenizer)
+	COMMAND strip mapbuilder)
 endif (UNIX)
 
 install(TARGETS txtz
