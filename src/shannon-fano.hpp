@@ -85,7 +85,7 @@ namespace shannon_fano
     struct ngram_t
     {
         std::string token{};
-        std::size_t weight{0};
+        float weight{0};
         code c;
     };
 
