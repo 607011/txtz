@@ -133,17 +133,6 @@ int main(int argc, char *argv[])
         out.reset(new std::ofstream(output_filename, std::ios::trunc | std::ios::binary));
     }
 
-    auto in_flags = in->flags();
-    auto out_flags = out->flags();
-    if (&*in == &std::cin)
-    {
-        in->setf(std::ios::binary);
-    }
-    if (&*out == &std::cout)
-    {
-        out->setf(std::ios::binary);
-    }
-
     std::size_t out_len;
     std::vector<char> in_buf(std::istreambuf_iterator<char>(*in), {});
     constexpr std::size_t SMAZ_SAFETY_MARGIN = 10;
@@ -208,13 +197,5 @@ int main(int argc, char *argv[])
         break;
     }
 
-    if (&*in == &std::cin)
-    {
-        in->setf(in_flags);
-    }
-    if (&*out == &std::cout)
-    {
-        out->setf(out_flags);
-    }
     return EXIT_SUCCESS;
 }
