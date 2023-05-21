@@ -1,1002 +1,999 @@
-	
-Peter	1293922
-Michael	1088118
-Wolfgang	1075005
-Thomas	1011277
-Klaus	992990
-Werner	977333
-Manfred	945413
-Ursula	899605
-Maria	885902
-Hans	873148
-Heinz	847335
-Andreas	840293
-Jürgen	824319
-Monika	821724
-Helmut	819185
-Gerhard	805112
-Petra	770755
-Günter	763897
-Renate	762413
-Helga	760826
-Karin	757143
-Dieter	756916
-Horst	755578
-Sabine	739471
-Brigitte	721371
-Josef	706353
-Ingrid	644290
-Elisabeth	633529
-Frank	623669
-Andrea	602267
-Gisela	601122
-Walter	596284
-Bernd	588232
-Erika	576506
-Karl	562982
-Christa	562482
-Claudia	536320
-Herbert	528846
-Martin	526960
-Birgit	521233
-Christine	508318
-Susanne	497516
-Christian	491310
-Stefan	484655
-Heike	477721
-Franz	474915
-Elke	473508
-Uwe	472266
-Barbara	471550
-Karl-Heinz	453174
-Martina	451679
-Marianne	450313
-Inge	416293
-Hildegard	411343
-Georg	410583
-Heinrich	409807
-Hermann	399588
-Angelika	398123
-Rudolf	390630
-Anna	388729
-Ute	382310
-Rolf	381819
-Doris	381254
-Kurt	375598
-Siegfried	374426
-Rainer	367902
-Joachim	367357
-Johann	365653
-Irmgard	360948
-Hannelore	359840
-Gertrud	356645
-Ralf	354418
-Ulrike	345880
-Kerstin	345507
-Jutta	344495
-Norbert	339097
-Wilhelm	338278
-Bernhard	332947
-Markus	331736
-Jörg	327606
-Alfred	325727
-Matthias	325570
-Alexander	323088
-Ruth	315924
-Anja	312992
-Ulrich	312924
-Willi	302996
-Erich	302206
-Gerda	299546
-Sandra	298185
-Christel	296914
-Elfriede	296364
-Rita	293441
-Anneliese	286056
-Waltraud	282693
-Harald	281371
-Roland	280548
-Marion	279004
-Edith	278400
-Reinhard	278023
-Ilse	277405
-Nicole	274902
-Beate	274843
-Regina	273361
-Paul	269624
-Ingeborg	268188
-Rosemarie	264879
-Günther	264318
-Gerd	262029
-Gabriele	257480
-Lothar	256853
-Ernst	256135
-Robert	253612
-Dirk	250376
-Eva	250005
-Friedrich	241885
-Manuela	239625
-Silke	237944
-Erwin	235915
-Sonja	235793
-Katharina	234067
-Johannes	233862
-Gudrun	232501
-Fritz	230940
-Otto	226699
-Anita	225757
-Tanja	224975
-Jens	223829
-Christiane	223605
-Margarete	221089
-Volker	220083
-Sigrid	218941
-Wilfried	218168
-Silvia	217978
-Bärbel	216304
-Bettina	212753
-Daniela	212175
-Irene	211823
-Simone	211206
-Cornelia	208805
-Stefanie	208582
-Lutz	205785
-Annette	205046
-Anke	194495
-Heidi	191709
-Angela	191627
-Michaela	191115
-Holger	190946
-Hans-Jürgen	190069
-Dagmar	189348
-Johanna	186693
-Richard	185975
-Hubert	183660
-Christina	182429
-Anton	181887
-Udo	175755
-Melanie	173990
-Katrin	173491
-Dietmar	170458
-Roswitha	170355
-Hartmut	170204
-Annemarie	168576
-Sylvia	167121
-Christoph	165110
-Oliver	164024
-Erna	163525
-Margot	162214
-Stephan	162008
-Hans-Joachim	160255
-Albert	159498
-Daniel	156634
-Ludwig	156545
-Reinhold	155844
-Detlef	155150
-Iris	146426
-Alexandra	145722
-Katja	142246
-Margret	139997
-Astrid	139330
-Adolf	138965
-Anne	137835
-Margit	134576
-Sven	134264
-Marlies	131394
-Reiner	130085
-Steffen	129673
-Helene	126286
-Julia	126100
-Axel	124966
-Carmen	124553
-Ilona	124070
-Eberhard	122292
-Torsten	121523
-Heiko	121449
-Hedwig	121394
-Sebastian	118093
-Kai	117576
-Jan	116234
-Kathrin	115612
-Mario	113178
-Thorsten	113127
-Antje	112764
-Jochen	111005
-Lieselotte	110659
-Olaf	110588
-Anni	109835
-Dorothea	108281
-Waldemar	107821
-Yvonne	107494
-Hilde	107427
-Alois	106428
-Hans-Peter	106323
-Ingo	105965
-Konrad	104428
-Carsten	104295
-Gerlinde	104203
-Martha	103399
-Bruno	102968
-Lydia	101894
-Agnes	101228
-Rüdiger	101220
-Stephanie	98947
-Friedhelm	98703
-Tobias	97011
-Nadine	96543
-Heidrun	96207
-Marco	96050
-Armin	95069
-Ines	94631
-Alfons	94334
-Edeltraud	93858
-Olga	93735
-Winfried	93353
-Rudi	93129
-Erhard	93027
-Else	92748
-Britta	92313
-Marita	91886
-Vera	91577
-Max	91567
-Gabi	91324
-Marina	91116
-Viktor	90912
-Carola	89954
-Rosa	89501
-Egon	89068
-Luise	88681
-Charlotte	88672
-Ewald	87886
-Sieglinde	87471
-Andre	87252
-Diana	86371
-Ellen	85946
-Klaus-Dieter	84591
-Franziska	82530
-Herta	81293
-Bianca	80923
-Jakob	80622
-Harry	80619
-Karlheinz	80014
-Kirsten	79261
-Veronika	78470
-Elvira	78418
-Annegret	77614
-Karsten	77466
-Florian	76128
-Käthe	76081
-Claus	75316
-Hans-Dieter	74880
-Frieda	74817
-Lisa	74766
-Achim	74656
-Eugen	73415
-Irma	72401
-Edgar	71090
-Ina	71087
-Sascha	70565
-Eduard	69846
-Marlene	69732
-Patrick	69408
-Ramona	68391
-Brunhilde	67424
-Theresia	67381
-Mathias	67334
-Heidemarie	66587
-Marc	66450
-Nina	66383
-Uta	66034
-Theo	65042
-Marcus	64684
-Sabrina	64001
-Adelheid	63025
-Guido	61887
-Lars	61414
-Hanna	60494
-Rene	60413
-Franz-Josef	59969
-Anette	59571
-Gertraud	59529
-Eckhard	58798
-Marga	58652
-Verena	57850
-Gottfried	57554
-Jana	57352
-Arno	57030
-David	56546
-Jun	56398
-Magdalena	55612
-Dietrich	54629
-Philipp	54607
-Burkhard	54409
-Berthold	54399
-Irina	53497
-Corinna	52645
-Eva-Maria	52423
-Evelyn	52331
-Klara	51941
-Tatjana	51626
-Wilma	51498
-Elena	51243
-Gaby	51073
-Friedel	51071
-Arnold	50555
-Mechthild	49706
-Judith	49466
-Emma	49384
-Heide	49382
-Gerald	49225
-Theodor	49205
-Hans-Georg	48796
-Karola	48696
-Marcel	48588
-Artur	48311
-Jennifer	47855
-Emil	47583
-Therese	47486
-Ralph	46711
-Klaus-Peter	46542
-Tina	46328
-Fred	45844
-Gustav	45509
-Edmund	44849
-Sarah	44590
-Marie	44351
-Maik	43663
-Isolde	43169
-Lore	43045
-Ferdinand	43025
-Paula	42986
-Jessica	42741
-Bodo	42373
-Ronald	42224
-Eleonore	42032
-August	41924
-Kornelia	41497
-Waltraut	41225
-Benjamin	41182
-Hans-Werner	41087
-Steffi	40641
-Mathilde	40640
-Dennis	40465
-Maren	40373
-Björn	40341
-Liane	40325
-Dorothee	40163
-Thea	40097
-Felix	39885
-Regine	39464
-Willy	39323
-Annett	38795
-Elsbeth	38525
-Manuel	38180
-Leo	38126
-Mike	37774
-Hugo	37556
-Henning	37217
-Sibylle	36792
-Gert	36552
-Marie-Luise	36546
-Patricia	36377
-Frauke	36201
-Roman	35972
-Wolfram	35592
-Pia	35566
-Sybille	35291
-Margrit	34969
-Berta	34280
-Simon	34247
-Oskar	34127
-Gregor	33878
-Kristina	33729
-Brigitta	33714
-Gunter	33678
-Karla	33561
-Gabriela	33388
-Liselotte	33304
-Marlis	32896
-Juliane	32892
-Ingeburg	32827
-Timo	32599
-Tim	32596
-Margitta	32148
-Kay	32073
-Josefine	31744
-Elmar	31665
-Ludger	31661
-Miriam	31026
-Beatrix	30833
-Meike	30759
-Arthur	30654
-Ursel	30262
-Valentina	30221
-Ulla	30196
-Ida	29957
-Clemens	29813
-Heribert	29679
-Jasmin	29636
-Walburga	29629
-Edwin	29619
-Ali	29525
-Albrecht	29257
-Hella	29060
-Henry	29016
-Magdalene	28990
-Heiner	28957
-Edelgard	28797
-Doreen	28690
-Mark	28630
-Linda	28362
-Maike	28001
-Ella	27875
-Carolin	27703
-Nadja	27597
-Leonhard	27589
-Helena	27544
-Ulf	27515
-Natalie	27333
-Dora	27332
-Edda	27067
-Elsa	27034
-Nikolaus	26982
-Eveline	26879
-Hiltrud	26723
-Hermine	26666
-Raimund	26665
-Mandy	26453
-Adam	26350
-Dominik	26080
-Lotte	26058
-Helma	25981
-Alice	25958
-Margarethe	25726
-Ilka	25530
-Mehmet	25093
-Ronny	25073
-Friederike	24786
-Lorenz	24342
-Esther	24128
-Detlev	24077
-Viola	23969
-Natalia	23909
-Alex	23704
-Karen	23381
-Annelies	23377
-Edeltraut	23331
-Karina	23097
-Irmtraud	23041
-Annerose	22939
-Sen	22886
-Cordula	22770
-Nils	22590
-Lena	21801
-Janine	21771
-Rosi	21717
-Fabian	21662
-Caroline	21444
-Volkmar	21437
-Carina	21430
-Gerold	21359
-Tamara	21314
-Oswald	21290
-Jörn	21253
-Lina	21226
-Benno	21134
-Susann	21129
-Annelie	21126
-Christof	21081
-Jacqueline	21060
-Laura	20805
-Sophie	20803
-Evelin	20756
-Elli	20738
-Grete	20560
-Lucia	20510
-Toni	20452
-Sergej	20424
-Mirko	20419
-Antonio	20402
-Engelbert	20385
-Lilli	20263
-Hans-Jörg	20247
-Maximilian	20180
-Christopher	20055
-Marko	19786
-Heinz-Dieter	19667
-Vanessa	19638
-Xaver	19626
-Annika	19593
-Emmi	19389
-Hans-Ulrich	19301
-Hans-Josef	19263
-Antonia	19197
-Boris	18906
-Wiebke	18886
-Inga	18873
-Rosmarie	18809
-Liesel	18731
-Mustafa	18718
-Juergen	18429
-Uschi	18312
-Heinz-Jürgen	18253
-Birgitt	18221
-Gunda	18216
-Hendrik	18207
-Margareta	18174
-Hermann-Josef	18096
-Helmuth	18080
-Enrico	18076
-Lidia	17941
-Hans-Günter	17787
-Viktoria	17739
-Hans-Hermann	17627
-Knut	17541
-Erik	17258
-Gernot	17253
-Jenny	17233
-Dörte	17213
-Marta	17171
-Natascha	17156
-Marian	16955
-Nico	16799
-Hans-Heinrich	16695
-Heino	16664
-Sigrun	16342
-Ottmar	16334
-Kristin	16319
-Peggy	16266
-Nicola	16253
-Janina	16245
-Denise	16237
-Grit	16154
-Vladimir	16154
-Wilhelmine	16136
-Arne	16073
-Hubertus	16048
-Otmar	15905
-Klemens	15838
-Eric	15837
-Traute	15578
-Svenja	15573
-John	15465
-Helge	15464
-Emilie	15452
-Hartwig	15420
-Willibald	15386
-Käte	15285
-Gitta	15263
-Evi	15205
-Roger	15101
-Elfi	14950
-Rosel	14894
-Anna-Maria	14800
-Gertraude	14786
-Mareike	14649
-Magda	14640
-Susan	14638
-Alwin	14636
-Giesela	14603
-Isabel	14601
-Hanni	14556
-Resi	14487
-Klaudia	14460
-Ottilie	14444
-Falk	14382
-Tino	14341
-Rebecca	14291
-Gunnar	14289
-Siegrid	14276
-Josefa	14195
-Joerg	14040
-Andrej	14028
-Hilmar	13946
-Gunther	13934
-Hilda	13830
-Julian	13748
-Kevin	13742
-Bernadette	13697
-Bianka	13616
-Svetlana	13516
-Ingolf	13487
-Henriette	13448
-Tom	13386
-Siegbert	13323
-Adele	13285
-Heinz-Peter	13273
-Thilo	13270
-Siegmund	13264
-Constanze	13243
-Sylke	13223
-Galina	13189
-Ria	13159
-Jeanette	13113
-Larissa	13047
-Valentin	13040
-Gundula	13027
-Ahmet	12972
-Giuseppe	12911
-Klaus-Jürgen	12897
-Karl-Josef	12869
-Isabella	12770
-Siglinde	12748
-Annelore	12732
-Konstantin	12653
-Ivan	12630
-Gretel	12577
-Julius	12537
-Carla	12494
-Karoline	12485
-Dorit	12467
-Anett	12425
-Lucie	12397
-Saskia	12326
-Robin	12176
-Rupert	12156
-Betty	12129
-Leni	12042
-Wladimir	12011
-Hasan	12008
-Beatrice	11981
-Hinrich	11920
-Hertha	11690
-Melitta	11673
-Ivonne	11610
-Almut	11547
-Christl	11545
-Benedikt	11542
-Hanne	11494
-Wolf-Dieter	11385
-Hagen	11379
-Adrian	11376
-Marliese	11361
-Swetlana	11341
-Kathleen	11330
-Birte	11306
-Joseph	11282
-Hauke	11223
-Pascal	11151
-Hans-Gerd	11122
-Isabell	11099
-Egbert	11086
-Siegmar	11042
-Alma	10983
-Conny	10945
-Lukas	10935
-Adalbert	10902
-Denis	10811
-Heinz-Josef	10802
-Luzia	10751
-Hansjörg	10683
-Silvio	10679
-Chris	10619
-Christin	10618
-Ekkehard	10555
-Meta	10527
-Corina	10458
-Bastian	10445
-Anika	10312
-Imke	10304
-Uli	10292
-Guenter	10267
-Sofia	10219
-Ingelore	10213
-Kim	10205
-Horst-Dieter	10184
-Ludmilla	10125
-Ariane	10119
-Friedrich-Wilhelm	10084
-Rosina	10043
-Jeannette	10040
-Ismail	10039
-Lilia	10030
-Wolf	10021
-Salvatore	10005
-Ibrahim	9974
-Bert	9952
-Tilo	9907
-Hannes	9832
-Cäcilia	9825
-Moritz	9778
-	
-Fatma	9664
-Igor	9640
-Susanna	9622
-Nancy	9607
-Irena	9604
-Hans-Otto	9564
-Gisbert	9409
-Nelli	9390
-Thekla	9348
-Kirstin	9267
-Gesine	9245
-Marika	9228
-Sina	9201
-Marius	9167
-Nikolai	9160
-Nora	9131
-Steven	9128
-Sara	9115
-Jose	9113
-Jonas	9045
-Henrik	9037
-Karl-Friedrich	8954
-Hüseyin	8917
-Rolf-Dieter	8912
-Hedi	8903
-Teresa	8882
-Elise	8868
-Gebhard	8862
-Carl	8850
-Theresa	8839
-Felicitas	8813
-Aloys	8803
-Karolina	8801
-Philip	8774
-Murat	8754
-Francesco	8712
-Babette	8687
-Liesbeth	8668
-Malte	8656
-Sofie	8655
-Hans-Günther	8636
-Pauline	8611
-Ricarda	8607
-Nathalie	8603
-Norman	8594
-Gerti	8544
-Ullrich	8481
-Frieder	8471
-Ana	8374
-Reimund	8281
-Wanda	8244
-Reinhild	8184
-Andree	8151
-Isabelle	8130
-Gerrit	8109
-Eckart	8105
-Gotthard	8064
-Arnd	8033
-Bertram	8033
-Ansgar	8023
-Maritta	7973
-Rose	7960
-Hans-Martin	7944
-Margarita	7936
-Heinz-Werner	7889
-Lilo	7858
-Mirjam	7772
-Hans-Wilhelm	7771
-Maja	7760
-Heinz-Günter	7759
-Alina	7753
-Sophia	7750
-Arndt	7736
-Victor	7716
-Sönke	7710
-Roberto	7701
-Agathe	7697
-Eike	7679
-Antonius	7648
-Juri	7638
-Monique	7629
-Dana	7602
-Alwine	7585
-Marek	7512
-Rico	7501
-Hans-Walter	7496
-Giovanni	7494
-Romy	7468
-Gesa	7428
-Reinhilde	7377
-Hilke	7373
-Leopold	7321
-Mohamed	7255
-Johanne	7157
-Ahmed	7110
-André	7101
-Sandy	7086
-Sabina	7053
-Sören	6987
-Wally	6987
-Irmtraut	6971
-Mona	6885
-Lisbeth	6879
-Niels	6868
-Ewa	6854
-Valeri	6838
-Pamela	6834
-Marietta	6828
-Luzie	6764
-Wendelin	6757
-Ayse	6751
-Nicolas	6732
-Till	6705
-Emmy	6704
-Henny	6659
-Danuta	6654
-Cindy	6628
-Oleg	6616
-Pierre	6603
-Jens-Uwe	6535
-Claus-Dieter	6528
-Rafael	6525
-Kai-Uwe	6511
-Wiltrud	6505
-Ludmila	6496
-Selma	6482
-Frida	6480
-Irmhild	6469
-Mechtild	6456
-Margaretha	6449
-Janet	6443
-Monica	6439
-Birgitta	6434
-Bernard	6432
-Auguste	6426
-Antonie	6418
-Falko	6368
-Albin	6362
-Andrew	6359
-Ortrud	6353
-Götz	6326
-Anastasia	6305
-Cäcilie	6273
-Leonore	6262
-Raphael	6216
-Torben	6171
-Georgios	6118
-Brunhild	6113
-Gertrude	6094
-Isa	6075
-Joanna	6069
-Carlos	5989
-Heinz-Georg	5964
-Danny	5926
-Michele	5918
-Friedbert	5913
-Inka	5876
-Harri	5851
-Kati	5849
-Gerta	5819
-Fridolin	5818
-Hardy	5814
-Reinhardt	5800
-Michel	5790
-Heiderose	5775
-Hans-Christian	5753
-Annemie	5752
-Trude	5746
-Victoria	5740
-Karl-Wilhelm	5699
-Thi	5694
-Simona	5656
-Eckard	5646
-Helgard	5602
-Ernst-August	5587
-Gabriel	5587
-Jaqueline	5565
-Silvana	5557
-Angelo	5547
-Meinolf	5506
-Elly	5490
-Mohammad	5488
-Karl-Otto	5487
-Konstanze	5487
-Inna	5467
-Dunja	5443
-Rosita	5423
-Hans-Willi	5421
-Emine	5379
-Osman	5374
-Traudel	5370
-Vincenzo	5366
-Rosalinde	5348
-Änne	5324
-Enno	5286
-Karl-Ludwig	5286
-Marlen	5283
-Leonie	5272
-Gerhild	5262
-Karl-Ernst	5247
-Claus-Peter	5212
-Karl-Heinrich	5211
-Vitali	5210
-Hanno	5166
-Eugenie	5136
-Helen	5135
-Katarina	5108
-Burghard	5089
-Dimitrios	5068
-Anny	5064
-René	5033
-Hatice	5032
-Diane	5022
-Hellmut	5008
-Evelyne	4998
-Catrin	4995
-Marija	4995
-Madeleine	4992
-Andy	4979
-James	4968
-Hanspeter	4942
-Hannah	4941
-Ortwin	4940
-Manja	4933
-Emilia	4892
-Mary	4871
-Jrgen	4825
-Juan	4816
-Jolanta	4794
-Cornelius	4790
-Swen	4759
-Jean	4740
-Natalja	4736
-Karl-Hermann	4731
-Dietlinde	4725
-Amalie	4718
-Renata	4717
-Lilly	4712
-Friedemann	4685
-Halina	4664
-Heinz-Hermann	4652
-Ernestine	4633
-Jens-Peter	4627
-Kunigunde	4619
-Kuno	4616
-Dominic	4608
-Fredi	4589
-Anatoli	4584
-Berit	4579
-Edward	4579
-Heinz-Joachim	4551
-William	4546
-Cathrin	4542
-Carlo	4530
-Lea	4528
-Samuel	4511
-Sibille	4495
-Brita	4494
-Dierk	4493
-Mina	4493
-Almuth	4474
-Myriam	4459
-Gero	4451
-Yusuf	4440
-Maria-Luise	4423
-Herwig	4421
-Anne-Marie	4414
-Wolf-Rüdiger	4411
-Aloisia	4408
-Patrizia	4367
-Zita	4365
-Milan	4357
-Christiana	4353
-Valerie	4351
-Kaspar	4334
-Ole	4316
-Sandro	4307
-Ekaterina	4300
-Niklas	4291
-Dominique	4285
-Lioba	4271
-Emanuel	4264
-Meinhard	4255
-Roswita	4253
-Dimitri	4233
-Karl-Peter	4231
-Peer	4203
-Susi	4171
-Kristine	4157
-Yilmaz	4150
-Herma	4149
-Leonid	4142
-Rose-Marie	4135
-Beata	4128
-Angelina	4124
-Traude	4100
-Ulli	4095
-Małgorzata	4091
-Insa	4059
-Mohammed	4041
-Alexa	4030
+Pe|ter;1293922
+Mi|ch|ael;1088118
+Wolf|gang;1075005
+Tho|mas;1011277
+Klaus;992990
+Wer|ner;977333
+Man|fred;945413
+Ur|su|la;899605
+Ma|ria;885902
+Hans;873148
+Heinz;847335
+An|dre|as;840293
+Jür|gen;824319
+Mo|ni|ka;821724
+Hel|mut;819185
+Ger|hard;805112
+Pe|tra;770755
+Gün|ter;763897
+Re|na|te;762413
+Hel|ga;760826
+Ka|rin;757143
+Die|ter;756916
+Horst;755578
+Sa|bi|ne;739471
+Bri|git|te;721371
+Jo|sef;706353
+In|grid;644290
+E|li|sa|beth;633529
+Frank;623669
+An|dre|a;602267
+Gi|se|la;601122
+Wal|ter;596284
+Bernd;588232
+E|ri|ka;576506
+Karl;562982
+Chris|ta;562482
+Clau|di|a;536320
+Her|bert;528846
+Mar|tin;526960
+Bir|git;521233
+Chris|tine;508318
+Su|san|ne;497516
+Chris|ti|an;491310
+Ste|fan;484655
+Hei|ke;477721
+Franz;474915
+El|ke;473508
+U|we;472266
+Bar|ba|ra;471550
+Karl|-|Heinz;453174
+Mar|ti|na;451679
+Mar|ian|ne;450313
+In|ge;416293
+Hil|de|gard;411343
+Ge|org;410583
+Hein|rich;409807
+Her|mann;399588
+An|ge|li|ka;398123
+Ru|dolf;390630
+An|na;388729
+Ute;382310
+Rolf;381819
+Do|ris;381254
+Kurt;375598
+Sieg|fried;374426
+Rai|ner;367902
+Jo|a|chim;367357
+Jo|hann;365653
+Irm|gard;360948
+Han|ne|lo|re;359840
+Ger|trud;356645
+Ralf;354418
+Ul|ri|ke;345880
+Kers|tin;345507
+Jut|ta;344495
+Nor|bert;339097
+Wil|helm;338278
+Bern|hard;332947
+Mar|kus;331736
+Jörg;327606
+Al|fred;325727
+Mat|thias;325570
+A|lex|and|er;323088
+Ruth;315924
+An|ja;312992
+Ul|rich;312924
+Wil|li;302996
+E|rich;302206
+Ger|da;299546
+San|dra;298185
+Chris|tel;296914
+El|frie|de;296364
+Ri|ta;293441
+An|ne|lie|se;286056
+Wal|traud;282693
+Ha|rald;281371
+Ro|land;280548
+Ma|ri|on;279004
+E|dith;278400
+Rein|hard;278023
+Il|se;277405
+Ni|co|le;274902
+Be|ate;274843
+Re|gi|na;273361
+Paul;269624
+In|ge|borg;268188
+Ro|se|ma|rie;264879
+Gün|ther;264318
+Gerd;262029
+Ga|brie|le;257480
+Lo|thar;256853
+Ernst;256135
+Ro|bert;253612
+Dirk;250376
+Eva;250005
+Frie|drich;241885
+Manu|e|la;239625
+Sil|ke;237944
+Er|win;235915
+Son|ja;235793
+Ka|tha|ri|na;234067
+Jo|han|nes;233862
+Gu|drun;232501
+Fritz;230940
+Ot|to;226699
+Ani|ta;225757
+Tan|ja;224975
+Jens;223829
+Chris|ti|ane;223605
+Mar|ga|re|te;221089
+Vol|ker;220083
+Si|grid;218941
+Wil|fried;218168
+Sil|via;217978
+Bär|bel;216304
+Bet|tina;212753
+Da|ni|e|la;212175
+Ire|ne;211823
+Si|mo|ne;211206
+Cor|ne|li|a;208805
+Ste|fa|nie;208582
+Lutz;205785
+An|net|te;205046
+An|ke;194495
+Hei|di;191709
+An|ge|la;191627
+Mi|cha|e|la;191115
+Hol|ger;190946
+Hans|-|Jür|gen;190069
+Dag|mar;189348
+Jo|han|na;186693
+Ri|chard;185975
+Hu|bert;183660
+Chris|ti|na;182429
+An|ton;181887
+U|do;175755
+Me|la|nie;173990
+Ka|trin;173491
+Diet|mar;170458
+Ros|wi|tha;170355
+Hart|mut;170204
+An|ne|ma|rie;168576
+Syl|vi|a;167121
+Chris|toph;165110
+O|li|ver;164024
+Er|na;163525
+Mar|got;162214
+Ste|phan;162008
+Hans|-|Jo|a|chim;160255
+Al|bert;159498
+Da|ni|el;156634
+Lud|wig;156545
+Rein|hold;155844
+Det|lef;155150
+I|ris;146426
+A|le|xan|dra;145722
+Kat|ja;142246
+Mar|gret;139997
+As|trid;139330
+A|dolf;138965
+An|ne;137835
+Mar|git;134576
+Sven;134264
+Mar|lies;131394
+Rei|ner;130085
+Stef|fen;129673
+He|le|ne;126286
+Ju|li|a;126100
+A|xel;124966
+Car|men;124553
+I|lo|na;124070
+E|ber|hard;122292
+Tors|ten;121523
+Hei|ko;121449
+Hed|wig;121394
+Se|bas|ti|an;118093
+Kai;117576
+Jan;116234
+Ka|thrin;115612
+Ma|ri|o;113178
+Thors|ten;113127
+Ant|je;112764
+Jo|chen;111005
+Lie|se|lot|te;110659
+O|laf;110588
+An|ni;109835
+Do|ro|the|a;108281
+Wal|de|mar;107821
+Y|von|ne;107494
+Hil|de;107427
+A|lois;106428
+Hans-Pe|ter;106323
+In|go;105965
+Kon|rad;104428
+Cars|ten;104295
+Ger|lin|de;104203
+Mar|tha;103399
+Bru|no;102968
+Ly|dia;101894
+Ag|nes;101228
+Rü|di|ger;101220
+Ste|pha|nie;98947
+Fried|helm;98703
+To|bi|as;97011
+Na|di|ne;96543
+Hei|drun;96207
+Mar|co;96050
+Ar|min;95069
+I|nes;94631
+Al|fons;94334
+E|del|traud;93858
+Ol|ga;93735
+Win|fried;93353
+Ru|di;93129
+Er|hard;93027
+El|se;92748
+Brit|ta;92313
+Ma|ri|ta;91886
+Ve|ra;91577
+Max;91567
+Ga|bi;91324
+Ma|ri|na;91116
+Vik|tor;90912
+Ca|ro|la;89954
+Ro|sa;89501
+E|gon;89068
+Lu|i|se;88681
+Char|lot|te;88672
+E|wald;87886
+Sieg|lin|de;87471
+An|dre;87252
+Di|a|na;86371
+El|len;85946
+Klaus-Die|ter;84591
+Fran|zis|ka;82530
+Her|ta;81293
+Bi|an|ca;80923
+Ja|kob;80622
+Har|ry;80619
+Karl|heinz;80014
+Kirs|ten;79261
+Ve|ro|ni|ka;78470
+El|vi|ra;78418
+An|ne|gret;77614
+Kars|ten;77466
+Flo|ri|an;76128
+Kä|the;76081
+Claus;75316
+Hans|-|Die|ter;74880
+Frie|da;74817
+Li|sa;74766
+A|chim;74656
+Eu|gen;73415
+Ir|ma;72401
+Ed|gar;71090
+I|na;71087
+Sa|scha;70565
+E|du|ard;69846
+Mar|le|ne;69732
+Pa|trick;69408
+Ra|mo|na;68391
+Brun|hil|de;67424
+The|re|si|a;67381
+Ma|thi|as;67334
+Hei|de|ma|rie;66587
+Marc;66450
+Ni|na;66383
+U|ta;66034
+The|o;65042
+Mar|cus;64684
+Sa|bri|na;64001
+A|del|heid;63025
+Gui|do;61887
+Lars;61414
+Han|na;60494
+Re|ne;60413
+Franz-Jo|sef;59969
+A|net|te;59571
+Ger|traud;59529
+Eck|hard;58798
+Mar|ga;58652
+Ve|re|na;57850
+Gott|fried;57554
+Ja|na;57352
+Ar|no;57030
+Da|vid;56546
+Jun;56398
+Mag|da|lena;55612
+Die|trich;54629
+Phi|lipp;54607
+Burk|hard;54409
+Bert|hold;54399
+I|ri|na;53497
+Co|rin|na;52645
+E|va-Ma|ri|a;52423
+E|ve|lyn;52331
+Kla|ra;51941
+Tat|ja|na;51626
+Wil|ma;51498
+E|le|na;51243
+Ga|by;51073
+Frie|del;51071
+Ar|nold;50555
+Mecht|hild;49706
+Ju|dith;49466
+Em|ma;49384
+Hei|de;49382
+Ge|rald;49225
+The|o|dor;49205
+Hans|-|Ge|org;48796
+Ka|ro|la;48696
+Mar|cel;48588
+Ar|tur;48311
+Jen|ni|fer;47855
+E|mil;47583
+The|re|se;47486
+Ralph;46711
+Klaus|-|Pe|ter;46542
+Ti|na;46328
+Fred;45844
+Gus|tav;45509
+E|dmund;44849
+Sa|rah;44590
+Ma|rie;44351
+Maik;43663
+I|sol|de;43169
+Lo|re;43045
+Fer|di|nand;43025
+Pau|la;42986
+Jes|si|ca;42741
+Bo|do;42373
+Ro|nald;42224
+E|le|o|no|re;42032
+Au|gust;41924
+Kor|ne|lia;41497
+Wal|traut;41225
+Ben|ja|min;41182
+Hans-Wer|ner;41087
+Stef|fi;40641
+Ma|thil|de;40640
+Den|nis;40465
+Ma|ren;40373
+Björn;40341
+L|i|ane;40325
+Do|ro|thee;40163
+The|a;40097
+Fe|lix;39885
+Re|gi|ne;39464
+Wil|ly;39323
+An|nett;38795
+Els|beth;38525
+Ma|nu|el;38180
+Le|o;38126
+Mike;37774
+Hu|go;37556
+Hen|ning;37217
+Si|byl|le;36792
+Gert;36552
+Ma|rie|-|Lu|i|se;36546
+Pa|tri|ci|a;36377
+Frau|ke;36201
+Ro|man;35972
+Wol|fram;35592
+P|ia;35566
+Sy|bil|le;35291
+Mar|grit;34969
+Ber|ta;34280
+Si|mon;34247
+Os|kar;34127
+Gre|gor;33878
+Kris|ti|na;33729
+Bri|git|ta;33714
+Gun|ter;33678
+Kar|la;33561
+Ga|bri|e|la;33388
+Li|se|lot|te;33304
+Mar|lis;32896
+Ju|li|a|ne;32892
+In|ge|burg;32827
+Ti|mo;32599
+Tim;32596
+Mar|git|ta;32148
+Kay;32073
+Jo|se|fi|ne;31744
+El|mar;31665
+Lud|ger;31661
+Mi|ri|am;31026
+Be|a|trix;30833
+Mei|ke;30759
+Ar|thur;30654
+Ur|sel;30262
+Va|len|tina;30221
+Ul|la;30196
+I|da;29957
+Cle|mens;29813
+He|ri|bert;29679
+Jas|min;29636
+Wal|bur|ga;29629
+Ed|win;29619
+A|li;29525
+Al|brecht;29257
+Hel|la;29060
+Hen|ry;29016
+Mag|da|le|ne;28990
+Hei|ner;28957
+E|del|gard;28797
+Do|reen;28690
+Mark;28630
+Lin|da;28362
+Mai|ke;28001
+El|la;27875
+Ca|ro|lin;27703
+Nad|ja;27597
+Le|on|hard;27589
+He|le|na;27544
+Ulf;27515
+Na|ta|lie;27333
+Do|ra;27332
+Ed|da;27067
+El|sa;27034
+Ni|ko|laus;26982
+Eve|li|ne;26879
+Hil|trud;26723
+Her|mi|ne;26666
+Rai|mund;26665
+Man|dy;26453
+A|dam;26350
+Do|mi|nik;26080
+Lot|te;26058
+Hel|ma;25981
+A|li|ce;25958
+Mar|ga|re|the;25726
+Il|ka;25530
+Meh|met;25093
+Ron|ny;25073
+Frie|de|ri|ke;24786
+Lo|renz;24342
+Es|ther;24128
+Det|lev;24077
+V|i|ola;23969
+Na|ta|li|a;23909
+A|lex;23704
+Ka|ren;23381
+An|ne|lies;23377
+Edel|traut;23331
+Ka|ri|na;23097
+Irm|traud;23041
+An|ne|ro|se;22939
+Sen;22886
+Cor|du|la;22770
+Nils;22590
+Le|na;21801
+Ja|ni|ne;21771
+Ro|si;21717
+Fa|bi|an;21662
+Ca|ro|li|ne;21444
+Volk|mar;21437
+Ca|ri|na;21430
+Ge|rold;21359
+Ta|ma|ra;21314
+Os|wald;21290
+Jörn;21253
+Li|na;21226
+Ben|no;21134
+Su|sann;21129
+An|ne|lie;21126
+Chris|tof;21081
+Jacque|li|ne;21060
+Lau|ra;20805
+So|phie;20803
+E|ve|lin;20756
+El|li;20738
+Gre|te;20560
+Lu|ci|a;20510
+To|ni;20452
+Ser|gej;20424
+Mir|ko;20419
+An|to|ni|o;20402
+En|gel|bert;20385
+Lil|li;20263
+Hans|-|Jörg;20247
+Ma|xi|mi|li|an;20180
+Chris|to|pher;20055
+Mar|ko;19786
+Heinz|-|Die|ter;19667
+Va|nes|sa;19638
+Xa|ver;19626
+An|ni|ka;19593
+Em|mi;19389
+Hans|-|Ul|rich;19301
+Hans|-|Jo|sef;19263
+An|to|ni|a;19197
+Bo|ris;18906
+Wieb|ke;18886
+In|ga;18873
+Ros|ma|rie;18809
+Lie|sel;18731
+Mus|ta|fa;18718
+Juer|gen;18429
+U|schi;18312
+Heinz|-|Jür|gen;18253
+Bir|gitt;18221
+Gun|da;18216
+Hen|drik;18207
+Mar|ga|re|ta;18174
+Her|mann|-|Jo|sef;18096
+Hel|muth;18080
+En|ri|co;18076
+Li|di|a;17941
+Hans|-|Gün|ter;17787
+Vik|to|ri|a;17739
+Hans|-|Her|mann;17627
+Knut;17541
+Erik;17258
+Ger|not;17253
+Jen|ny;17233
+Dör|te;17213
+Mar|ta;17171
+Na|ta|scha;17156
+Ma|ri|an;16955
+Ni|co;16799
+Hans|-|Hein|rich;16695
+Hei|no;16664
+Si|grun;16342
+Ott|mar;16334
+Kris|tin;16319
+Peg|gy;16266
+Ni|co|la;16253
+Ja|ni|na;16245
+De|ni|se;16237
+Grit;16154
+Vla|di|mir;16154
+Wil|hel|mi|ne;16136
+Ar|ne;16073
+Hu|ber|tus;16048
+Ot|mar;15905
+Kle|mens;15838
+E|ric;15837
+Trau|te;15578
+Sven|ja;15573
+John;15465
+Hel|ge;15464
+E|mi|li|e;15452
+Hart|wig;15420
+Wil|li|bald;15386
+Kä|te;15285
+Git|ta;15263
+E|vi;15205
+Ro|ger;15101
+El|fi;14950
+Ro|sel;14894
+An|na|-|Ma|ri|a;14800
+Ger|trau|de;14786
+Ma|rei|ke;14649
+Mag|da;14640
+Su|san;14638
+Al|win;14636
+Gie|se|la;14603
+I|sa|bel;14601
+Han|ni;14556
+Re|si;14487
+Klau|di|a;14460
+Ot|ti|li|e;14444
+Falk;14382
+Ti|no;14341
+Re|bec|ca;14291
+Gun|nar;14289
+Sieg|rid;14276
+Jo|se|fa;14195
+Joerg;14040
+An|drej;14028
+Hil|mar;13946
+Gun|ther;13934
+Hil|da;13830
+Ju|li|an;13748
+Ke|vin;13742
+Ber|na|det|te;13697
+Bi|an|ka;13616
+Svet|la|na;13516
+In|golf;13487
+Hen|ri|et|te;13448
+Tom;13386
+Sieg|bert;13323
+A|de|le;13285
+Heinz|-|Pe|ter;13273
+Thi|lo;13270
+Sieg|mund;13264
+Cons|tan|ze;13243
+Syl|ke;13223
+Ga|li|na;13189
+Ri|a;13159
+Jea|net|te;13113
+La|ris|sa;13047
+Va|len|tin;13040
+Gun|du|la;13027
+Ah|met;12972
+Giu|sep|pe;12911
+Klaus|-|Jür|gen;12897
+Karl|-|Jo|sef;12869
+I|sa|bel|la;12770
+Sig|lin|de;12748
+An|ne|lo|re;12732
+Kons|tan|tin;12653
+I|van;12630
+Gre|tel;12577
+Ju|li|us;12537
+Car|la;12494
+Ka|ro|li|ne;12485
+Do|rit;12467
+A|nett;12425
+Lu|cie;12397
+Sas|kia;12326
+Ro|bin;12176
+Ru|pert;12156
+Bet|ty;12129
+Le|ni;12042
+Wla|di|mir;12011
+Ha|san;12008
+Be|a|tri|ce;11981
+Hin|rich;11920
+Her|tha;11690
+Me|lit|ta;11673
+I|von|ne;11610
+Al|mut;11547
+Christl;11545
+Be|ne|dikt;11542
+Han|ne;11494
+Wolf|-|Die|ter;11385
+Ha|gen;11379
+A|dri|an;11376
+Mar|lie|se;11361
+Swet|la|na;11341
+Kath|leen;11330
+Bir|te;11306
+Jo|seph;11282
+Hau|ke;11223
+Pas|cal;11151
+Hans|-|Gerd;11122
+I|sa|bell;11099
+Eg|bert;11086
+Sie|gmar;11042
+Al|ma;10983
+Con|ny;10945
+Lu|kas;10935
+A|dal|bert;10902
+De|nis;10811
+Heinz|-|Jo|sef;10802
+Lu|zia;10751
+Hans|jörg;10683
+Sil|vi|o;10679
+Chris;10619
+Chris|tin;10618
+Ek|ke|hard;10555
+Me|ta;10527
+Co|ri|na;10458
+Bas|ti|an;10445
+A|ni|ka;10312
+Im|ke;10304
+U|li;10292
+Guen|ter;10267
+So|fi|a;10219
+In|ge|lo|re;10213
+Kim;10205
+Horst|-|Die|ter;10184
+Lud|mil|la;10125
+A|ri|a|ne;10119
+Fried|rich|-|Wil|helm;10084
+Ro|si|na;10043
+Jean|net|te;10040
+Is|ma|il;10039
+Li|li|a;10030
+Wolf;10021
+Sal|va|to|re;10005
+I|bra|him;9974
+Bert;9952
+Ti|lo;9907
+Han|nes;9832
+Cä|ci|lia;9825
+Mo|ritz;9778
+Fat|ma;9664
+I|gor;9640
+Su|san|na;9622
+Nan|cy;9607
+I|re|na;9604
+Hans|-|Ot|to;9564
+Gis|bert;9409
+Nel|li;9390
+The|kla;9348
+Kirs|tin;9267
+Ge|si|ne;9245
+Ma|ri|ka;9228
+Si|na;9201
+Ma|ri|us;9167
+Ni|ko|lai;9160
+No|ra;9131
+Ste|ven;9128
+Sa|ra;9115
+José;9113
+Jo|nas;9045
+Hen|rik;9037
+Karl|-|Frie|drich;8954
+Hü|sey|in;8917
+Rolf|-|Die|ter;8912
+He|di;8903
+Te|re|sa;8882
+E|li|se;8868
+Geb|hard;8862
+Carl;8850
+The|re|sa;8839
+Fe|li|ci|tas;8813
+A|loys;8803
+Ka|ro|li|na;8801
+Phi|lip;8774
+Mu|rat;8754
+Fran|ces|co;8712
+Ba|bet|te;8687
+Lies|beth;8668
+Mal|te;8656
+So|fie;8655
+Hans|-|Gün|ther;8636
+Pau|li|ne;8611
+Ri|car|da;8607
+Na|tha|lie;8603
+Nor|man;8594
+Ger|ti;8544
+Ull|rich;8481
+Frie|der;8471
+A|na;8374
+Rei|mund;8281
+Wan|da;8244
+Rein|hild;8184
+An|dree;8151
+I|sa|bel|le;8130
+Ger|rit;8109
+Ec|kart;8105
+Gott|hard;8064
+Arnd;8033
+Ber|tram;8033
+Ans|gar;8023
+Ma|rit|ta;7973
+Ro|se;7960
+Hans|-|Mar|tin;7944
+Mar|ga|ri|ta;7936
+Heinz|-|Wer|ner;7889
+Li|lo;7858
+Mir|jam;7772
+Hans|-|Wil|helm;7771
+Ma|ja;7760
+Heinz|-|Gün|ter;7759
+A|li|na;7753
+So|phia;7750
+Arndt;7736
+Vic|tor;7716
+Sön|ke;7710
+Ro|be|rto;7701
+A|ga|the;7697
+Ei|ke;7679
+An|ton|i|us;7648
+Ju|ri;7638
+Mo|ni|que;7629
+Da|na;7602
+Al|wi|ne;7585
+Ma|rek;7512
+Ri|co;7501
+Hans|-|Wal|ter;7496
+Gio|van|ni;7494
+Ro|my;7468
+Ge|sa;7428
+Rein|hilde;7377
+Hil|ke;7373
+Le|o|pold;7321
+Mo|ha|med;7255
+Jo|han|ne;7157
+Ah|med;7110
+An|dré;7101
+San|dy;7086
+Sa|bi|na;7053
+Sö|ren;6987
+Wal|ly;6987
+Irm|traut;6971
+Mo|na;6885
+Lis|beth;6879
+Niels;6868
+E|wa;6854
+Va|le|ri;6838
+Pa|me|la;6834
+Ma|ri|et|ta;6828
+Lu|zie;6764
+Wen|de|lin;6757
+Ay|se;6751
+Ni|co|las;6732
+Till;6705
+Em|my;6704
+Hen|ny;6659
+Da|nu|ta;6654
+Cin|dy;6628
+O|leg;6616
+Pierre;6603
+Jens|-|U|we;6535
+Claus|-|Die|ter;6528
+Ra|fa|el;6525
+Kai|-|Uwe;6511
+Wil|trud;6505
+Lud|mi|la;6496
+Sel|ma;6482
+Fri|da;6480
+Irm|hild;6469
+Mecht|ild;6456
+Mar|ga|re|tha;6449
+Ja|net;6443
+Mo|ni|ca;6439
+Bir|git|ta;6434
+Ber|nard;6432
+Au|gus|te;6426
+An|to|nie;6418
+Fal|ko;6368
+Al|bin;6362
+And|rew;6359
+Or|trud;6353
+Götz;6326
+A|nas|ta|si|a;6305
+Cä|ci|li|e;6273
+Le|o|no|re;6262
+Ra|pha|el;6216
+Tor|ben;6171
+Ge|or|gi|os;6118
+Brun|hild;6113
+Ger|tru|de;6094
+I|sa;6075
+Jo|an|na;6069
+Car|los;5989
+Heinz|-|Ge|org;5964
+Dan|ny;5926
+Mi|che|le;5918
+Fried|bert;5913
+In|ka;5876
+Har|ri;5851
+Ka|ti;5849
+Ger|ta;5819
+Fri|do|lin;5818
+Har|dy;5814
+Rein|hardt;5800
+Mi|chel;5790
+Hei|de|ro|se;5775
+Hans|-|Chris|ti|an;5753
+An|ne|mie;5752
+Tru|de;5746
+Vic|to|ri|a;5740
+Karl|-|Wil|helm;5699
+Thi;5694
+Si|mo|na;5656
+Ec|kard;5646
+Hel|gard;5602
+Ernst|-|Au|gust;5587
+Ga|bri|el;5587
+Ja|que|li|ne;5565
+Sil|va|na;5557
+An|ge|lo;5547
+Mein|olf;5506
+El|ly;5490
+Mo|ham|mad;5488
+Karl|-|Ot|to;5487
+Kons|tan|ze;5487
+In|na;5467
+Dun|ja;5443
+Ro|si|ta;5423
+Hans|-|Wil|li;5421
+E|mi|ne;5379
+Os|man;5374
+Trau|del;5370
+Vin|cen|zo;5366
+Ro|sa|lin|de;5348
+Än|ne;5324
+En|no;5286
+Karl|-|Lud|wig;5286
+Mar|len;5283
+Le|o|nie;5272
+Ger|hild;5262
+Karl|-|Ernst;5247
+Claus|-|Pe|ter;5212
+Karl|-|Hein|rich;5211
+Vi|ta|li;5210
+Han|no;5166
+Eu|ge|ni|e;5136
+He|len;5135
+Ka|ta|ri|na;5108
+Burg|hard;5089
+Di|mi|tri|os;5068
+An|ny;5064
+Re|né;5033
+Ha|ti|ce;5032
+D|ia|ne;5022
+Hell|mut;5008
+Eve|ly|ne;4998
+Ca|trin;4995
+Ma|ri|ja;4995
+Ma|de|lei|ne;4992
+An|dy;4979
+James;4968
+Hans|pe|ter;4942
+Han|nah;4941
+Ort|win;4940
+Man|ja;4933
+E|mi|li|a;4892
+Ma|ry;4871
+Ju|an;4816
+Jo|lan|ta;4794
+Cor|ne|li|us;4790
+Swen;4759
+Je|an;4740
+Natal|ja;4736
+Karl|-|Her|mann;4731
+Diet|lin|de;4725
+A|ma|li|e;4718
+Re|na|ta;4717
+Lil|ly;4712
+Frie|de|mann;4685
+Ha|li|na;4664
+Heinz|-|Her|mann;4652
+Er|nes|ti|ne;4633
+Jens|-|Pe|ter;4627
+Ku|ni|gun|de;4619
+Ku|no;4616
+Do|mi|nic;4608
+Fre|di;4589
+A|na|to|li;4584
+Be|rit;4579
+Ed|ward;4579
+Heinz|-|Jo|a|chim;4551
+Wil|li|am;4546
+Ca|thrin;4542
+Car|lo;4530
+Le|a;4528
+Sa|mu|el;4511
+Si|bil|le;4495
+Bri|ta;4494
+Dierk;4493
+Mi|na;4493
+Al|muth;4474
+My|ri|am;4459
+Ge|ro;4451
+Yu|suf;4440
+Ma|ri|a|-|Lu|is|e;4423
+Her|wig;4421
+An|ne|-|Ma|rie;4414
+Wolf|-|Rü|di|ger;4411
+A|loi|si|a;4408
+Pa|tri|zi|a;4367
+Zi|ta;4365
+Mi|lan;4357
+Chris|ti|an|a;4353
+Va|le|rie;4351
+Kas|par;4334
+O|le;4316
+San|dro;4307
+E|ka|te|ri|na;4300
+Nik|las;4291
+Do|mi|ni|que;4285
+Li|o|ba;4271
+E|ma|nu|el;4264
+Mein|hard;4255
+Ros|wi|ta;4253
+Di|mi|tri;4233
+Karl|-|Pe|ter;4231
+Peer;4203
+Su|si;4171
+Kris|ti|ne;4157
+Yil|maz;4150
+Her|ma;4149
+Le|o|nid;4142
+Ro|se|-|Ma|rie;4135
+Be|a|ta;4128
+An|ge|li|na;4124
+Trau|de;4100
+Ul|li;4095
+Mał|gor|zata;4091
+In|sa;4059
+Mo|ham|med;4041
+A|le|xa;4030
