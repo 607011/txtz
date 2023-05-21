@@ -40,13 +40,13 @@ int main(int argc, char *argv[])
     bool fill_missing_monograms = false;
     char histo_delim = '\t';
     bool with_histogram = false;
-    fs::path input_path;
+    std::vector<fs::path> input_paths;
     argparser opt(argc, argv);
     opt
         .reg({"-i", "--input"}, argparser::required_argument,
-             [&input_path](std::string const &arg)
+             [&input_paths](std::string const &arg)
              {
-                 input_path = arg;
+                 input_paths.push_back(fs::path(arg));
              })
         .reg({"-g", "--generator"}, argparser::required_argument,
              [&generator_string](std::string const &arg)
@@ -84,9 +84,9 @@ int main(int argc, char *argv[])
         std::cerr << "ERROR in command line arguments\n";
         return EXIT_FAILURE;
     }
-    if (input_path.empty())
+    if (input_paths.empty())
     {
-        std::cerr << "\u001b[31;1mERROR: input path missing (see option -i)\n";
+        std::cerr << "\u001b[31;1mERROR: input missing (see option -i)\n";
         return EXIT_FAILURE;
     }
 
@@ -95,60 +95,63 @@ int main(int argc, char *argv[])
     // std::array<char, 4> const progress_indicator{'-', '\\', '|', '/'};
     // int pi_idx = 0;
     // std::size_t line_no = 0;
-    auto filenames = glob::glob(input_path.string());
-    while (filenames)
+    for (auto const &input_path : input_paths)
     {
-        std::string const &filename = filenames.current_match();
-        filenames.next();
-        if (!fs::exists(input_path.parent_path() / filename))
+        auto filenames = glob::glob(input_path.string());
+        while (filenames)
         {
-            std::cerr << "\u001b[31;1mERROR: file `"
-                      << (input_path.parent_path() / filename).string()
-                      << "` does not exist\n";
-            continue;
-        }
-        std::cout
-            << "\rProcessing " << (input_path.parent_path() / filename).string() << " ... \u001b[K\n"
-            << std::flush;
-        std::ifstream in(input_path.parent_path() / filename, std::ios::binary);
-        std::string line;
-        loc::generator gen;
-        while (std::getline(in, line))
-        {
-            // std::cout << progress_indicator.at((pi_idx++) % progress_indicator.size()) << "\u001b[D" << std::flush;
-            line = std::regex_replace(line, std::regex("(\n\r|\r\n|\n)+"), " ");
-            if (with_histogram)
+            std::string const &filename = filenames.current_match();
+            filenames.next();
+            if (!fs::exists(input_path.parent_path() / filename))
             {
-                float weight = std::numeric_limits<float>::epsilon();
-                auto word_histo = util::unpair(line, histo_delim);
-                try
+                std::cerr << "\u001b[31;1mERROR: file `"
+                          << (input_path.parent_path() / filename).string()
+                          << "` does not exist\n";
+                continue;
+            }
+            std::cout
+                << "\rProcessing " << (input_path.parent_path() / filename).string() << " ... \u001b[K\n"
+                << std::flush;
+            loc::generator gen;
+            std::ifstream in(input_path.parent_path() / filename, std::ios::binary);
+            std::string line;
+            while (std::getline(in, line))
+            {
+                // std::cout << progress_indicator.at((pi_idx++) % progress_indicator.size()) << "\u001b[D" << std::flush;
+                line = std::regex_replace(line, std::regex("(\n\r|\r\n|\n)+"), " ");
+                if (with_histogram)
                 {
-                    weight = std::stof(word_histo.second);
-                }
-                catch (std::invalid_argument const &e)
-                {
-                    std::cerr << e.what() << '\n';
-                }
-                catch (std::out_of_range const &e)
-                {
-                    std::cerr << e.what() << '\n';
-                }
-                if (split_by_phomenes)
-                {
-                    for (auto const &ph : util::split(word_histo.first, phoneme_delim))
+                    float weight = std::numeric_limits<float>::epsilon();
+                    auto word_histo = util::unpair(line, histo_delim);
+                    try
                     {
-                        std::cout << "`" << ph << "`: " << weight << '\n';
-                        phonemes[ph] += weight;
+                        weight = std::stof(word_histo.second);
+                    }
+                    catch (std::invalid_argument const &e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                    catch (std::out_of_range const &e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                    if (split_by_phomenes)
+                    {
+                        for (auto const &ph : util::split(word_histo.first, phoneme_delim))
+                        {
+                            std::cout << "`" << ph << "`: " << weight << '\n';
+                            phonemes[ph] += weight * ph.size();
+                        }
                     }
                 }
-            }
-            else
-            {
-                loc::boundary::ssegment_index map(boundary, line.begin(), line.end(), gen(generator_string));
-                loc::boundary::ssegment_index::iterator e = map.end();
-                for (loc::boundary::ssegment_index::iterator it = map.begin(); it != e; ++it)
+                else
                 {
-                    monograms[it->str()] += 1;
+                    loc::boundary::ssegment_index map(boundary, line.begin(), line.end(), gen(generator_string));
+                    loc::boundary::ssegment_index::iterator e = map.end();
+                    for (loc::boundary::ssegment_index::iterator it = map.begin(); it != e; ++it)
+                    {
+                        monograms[it->str()] += 1;
+                    }
                 }
             }
         }
