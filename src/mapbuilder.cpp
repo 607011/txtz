@@ -1,5 +1,28 @@
 /*
-    Copyright (c) 2023 Oliver Lau
+
+ Copyright (c) 2023 Oliver Lau <oliver.lau@gmail.com>
+
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation
+ files (the “Software”), to deal in the Software without
+ restriction, including without limitation the rights to use,
+ copy, modify, merge, publish, distribute, sublicense, and/or
+ sell copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following
+ conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ OTHER DEALINGS IN THE SOFTWARE.
+
 */
 
 #include <algorithm>
@@ -38,6 +61,7 @@ int main(int argc, char *argv[])
     bool split_by_phomenes = false;
     char phoneme_delim = '|';
     bool fill_missing_monograms = false;
+    std::vector<uint8_t> missing_monograms{};
     char histo_delim = '\t';
     bool with_histogram = false;
     std::vector<fs::path> input_paths;
@@ -60,10 +84,25 @@ int main(int argc, char *argv[])
                  phoneme_delim = arg.front();
                  boundary = loc::boundary::boundary_type::word;
              })
-        .reg({"--fill-missing-monograms"}, argparser::no_argument,
-             [&fill_missing_monograms](std::string const &)
+        .reg({"--fill-missing-monograms"}, argparser::optional_argument,
+             [&fill_missing_monograms, &missing_monograms](std::string const &arg)
              {
                  fill_missing_monograms = true;
+                 if (arg.empty())
+                 {
+                     missing_monograms.clear();
+                     for (uint8_t i = 0; i != 255; ++i)
+                     {
+                         missing_monograms.push_back(i);
+                     }
+                 }
+                 else
+                 {
+                     for (auto c : arg)
+                     {
+                         missing_monograms.push_back(static_cast<uint8_t>(c));
+                     }
+                 }
              })
         .reg({"-h", "--with-histo", "--with-histogram"}, argparser::no_argument,
              [&with_histogram](std::string const &)
@@ -139,7 +178,7 @@ int main(int argc, char *argv[])
                     {
                         for (auto const &ph : util::split(word_histo.first, phoneme_delim))
                         {
-                            std::cout << "`" << ph << "`: " << weight << '\n';
+                            // std::cout << "`" << ph << "`: " << weight << '\n';
                             phonemes[ph] += weight * ph.size();
                         }
                     }
@@ -184,9 +223,9 @@ int main(int argc, char *argv[])
 
     if (fill_missing_monograms)
     {
-        for (unsigned char i = 0; i != 255; ++i)
+        for (auto t : missing_monograms)
         {
-            char c = static_cast<char>(i);
+            char c = static_cast<char>(t);
             std::string token(&c, 1);
             if (monograms.find(token) == monograms.end())
             {
