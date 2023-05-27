@@ -68,7 +68,13 @@ To build JSON data and an #includable C++ file from a list with German forenames
   -g de-vornamen \
   --with-histo --histo-delim ';' \
   --phonemes '|' \
-  --fill-missing-monograms
+  --fill-missing-monograms abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXZäöüÄÖÜß’
 ```
 
 The JSON and C++ file are save as de-vornamen.json and de-vornamen.cpp.
+
+
+
+## License
+
+See (LICENSE).
