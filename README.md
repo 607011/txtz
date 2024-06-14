@@ -6,7 +6,7 @@ THIS IS WORK IN PROGRESS. DO NOT EXPECT ANYTHING USEFUL IN THIS REPO AT THE MOME
 
 
 
-## Prerequsites
+## Prerequisites
 
 - Boost Libraries 1.71 or newer
 
