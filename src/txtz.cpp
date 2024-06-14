@@ -92,26 +92,28 @@ int main(int argc, char *argv[])
     std::unique_ptr<std::istream, decltype(is_deleter)> in{nullptr, is_deleter};
     std::unique_ptr<std::ostream, decltype(os_deleter)> out{nullptr, os_deleter};
     opt
-        .reg({"-a", "--algo", "--algorithm"}, argparser::required_argument,
+        .help({"-?", "--help"}, "Display this help")
+        .reg({"-a", "--algo", "--algorithm"}, "ALGORITHM", argparser::required_argument,
+             "compression algorithm, either SF (Shannon-Fano) or SMAZ (default: SF)",
              [&algo](std::string const &arg)
              {
-                 if (arg == "sf" || arg == "shannon-fano")
+                 if (arg == "sf" || arg == "SF" || arg == "shannon-fano" || arg == "SHANNON-FANO")
                  {
                      algo = SHANNON_FANO;
                  }
-                 else if (arg == "smaz")
+                 else if (arg == "smaz" || arg == "SMAZ")
                  {
                      algo = SMAZ;
                  }
              })
-        .reg({"-d", "--decompress"}, argparser::no_argument, [&op](std::string const &)
+        .reg({"-d", "--decompress"}, argparser::no_argument, "Decompress data", [&op](std::string const &)
              { op = DECOMPRESS; })
-        .reg({"-c", "--compress"}, argparser::no_argument, [&op](std::string const &)
+        .reg({"-c", "--compress"}, argparser::no_argument, "Compress data", [&op](std::string const &)
              { op = COMPRESS; })
-        .reg({"-o", "--output"}, argparser::required_argument, [&output_filename](std::string const &arg)
-             { output_filename = arg; })
-        .reg({"-i", "--input"}, argparser::required_argument, [&input_filename](std::string const &arg)
-             { input_filename = arg; });
+        .reg({"-i", "--input-file"}, "INPUT_FILENAME", argparser::required_argument, "input file", [&input_filename](std::string const &arg)
+             { input_filename = arg; })
+        .reg({"-o", "--output-file"}, "OUTPUT_FILENAME", argparser::required_argument, "Where the output goes to", [&output_filename](std::string const &arg)
+             { output_filename = arg; });
     try
     {
         opt();
