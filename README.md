@@ -52,6 +52,8 @@ In Visual Studio Developer Console:
 ```
 git clone https://github.com/607011/txtz.git
 cd txtz
+git submodule update init
+git submodule update --remote --merge
 md build
 cd build
 cmake ..
@@ -71,7 +73,7 @@ To build JSON data and an #includable C++ file from a list with German forenames
   --fill-missing-monograms abcdefghijklmnopqrtsuvwxyzABCDEFGHIJKLMNOPQRSTUVWXZäöüÄÖÜß’
 ```
 
-The JSON and C++ file are save as de-vornamen.json and de-vornamen.cpp.
+The JSON and C++ file are saved as de-vornamen.json and de-vornamen.cpp.
 
 
 
