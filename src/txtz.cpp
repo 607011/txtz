@@ -40,7 +40,7 @@ extern "C"
 }
 
 #include "getopt.hpp"
-#include "de_DE-utf8.hpp"
+#include "de_DE.utf-8.hpp"
 #include "shannon-fano.hpp"
 namespace sf = shannon_fano;
 

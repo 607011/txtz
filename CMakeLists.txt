@@ -36,7 +36,7 @@ include_directories(
 
 add_executable(txtz
   src/txtz.cpp
-  src/de_DE-utf8.cpp
+  src/de_DE.utf-8.cpp
   src/shannon-fano.cpp
   src/util.cpp
   smaz/smaz.c

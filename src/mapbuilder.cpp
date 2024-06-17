@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 {
     using argparser = argparser::argparser;
     loc::boundary::boundary_type boundary = loc::boundary::boundary_type::character;
-    std::string generator_string = "de_DE.UTF-8";
+    std::string generator_string = "de_DE.utf-8";
     bool split_by_phomenes = false;
     char phoneme_delim = '|';
     bool fill_missing_monograms = false;
