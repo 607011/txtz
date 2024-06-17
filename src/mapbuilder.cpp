@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2023 Oliver Lau <oliver.lau@gmail.com>
+ Copyright (c) 2023-2024 Oliver Lau <oliver.lau@gmail.com>
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
