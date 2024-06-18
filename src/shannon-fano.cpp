@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2023 Oliver Lau <oliver.lau@gmail.com>
+ Copyright (c) 2023-2024 Oliver Lau <oliver.lau@gmail.com>
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
@@ -36,10 +36,10 @@ namespace shannon_fano
             p[l].c = c;
             return;
         }
-        auto pl = l;
-        auto pr = r;
-        auto wl = p[pl].weight;
-        auto wr = p[pr].weight;
+        std::size_t pl = l;
+        std::size_t pr = r;
+        auto wl = p.at(pl).weight;
+        auto wr = p.at(pr).weight;
         for (;;)
         {
             while (wr < wl && pr != pl + 1)
@@ -63,6 +63,6 @@ namespace shannon_fano
 
     void update(std::vector<ngram_t> &p)
     {
-        update(p, 0, p.size() - 1, code());
+        update(p, 0U, p.size() - 1U, code());
     }
 }

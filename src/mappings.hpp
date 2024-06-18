@@ -1,5 +1,5 @@
-#ifndef __DE_DE_UTF8_HPP__
-#define __DE_DE_UTF8_HPP__
+#ifndef __MAPPINGS_HPP__
+#define __MAPPINGS_HPP__
 
 #include <string>
 #include <unordered_map>
@@ -10,4 +10,5 @@ namespace shannon_fano
 {
     extern const std::unordered_map<std::string, shannon_fano::code> compression_table;
 }
-#endif
+
+#endif // __MAPPINGS_HPP__

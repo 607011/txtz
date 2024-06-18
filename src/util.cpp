@@ -49,7 +49,7 @@ namespace util
             }
             else
             {
-                result << "\\x" << std::setw(2) << std::hex << std::setfill('0') << static_cast<unsigned int>((uint8_t)c);
+                result << "\\" << std::setw(3) << std::oct << std::setfill('0') << static_cast<unsigned int>((uint8_t)c);
             }
         }
         return result.str();

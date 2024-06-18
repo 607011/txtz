@@ -40,8 +40,9 @@ extern "C"
 }
 
 #include "getopt.hpp"
-#include "de_DE.utf-8.hpp"
+#include "mappings.hpp"
 #include "shannon-fano.hpp"
+
 namespace sf = shannon_fano;
 
 namespace fs = std::filesystem;
@@ -87,11 +88,14 @@ int main(int argc, char *argv[])
     argparser opt(argc, argv);
     opmode_t op = INVALID_OP;
     algo_t algo = SHANNON_FANO;
+    bool strip_crlf = true;
+    bool stats_only_output = false;
     std::string input_filename;
     std::string output_filename;
     std::unique_ptr<std::istream, decltype(is_deleter)> in{nullptr, is_deleter};
     std::unique_ptr<std::ostream, decltype(os_deleter)> out{nullptr, os_deleter};
     opt
+        .info("txtz", argv[0])
         .help({"-?", "--help"}, "Display this help")
         .reg({"-a", "--algo", "--algorithm"}, "ALGORITHM", argparser::required_argument,
              "compression algorithm, either SF (Shannon-Fano) or SMAZ (default: SF)",
@@ -110,6 +114,10 @@ int main(int argc, char *argv[])
              { op = DECOMPRESS; })
         .reg({"-c", "--compress"}, argparser::no_argument, "Compress data", [&op](std::string const &)
              { op = COMPRESS; })
+        .reg({"--no-remove-crlf"}, argparser::no_argument, "Don't remove CR/LF from input.", [&strip_crlf](std::string const &)
+             { strip_crlf = false; })
+        .reg({"--stats", "--stats-only"}, argparser::no_argument, "Only output compression statistics.", [&stats_only_output](std::string const &)
+             { stats_only_output = true; })
         .reg({"-i", "--input-file"}, "INPUT_FILENAME", argparser::required_argument, "input file", [&input_filename](std::string const &arg)
              { input_filename = arg; })
         .reg({"-o", "--output-file"}, "OUTPUT_FILENAME", argparser::required_argument, "Where the output goes to", [&output_filename](std::string const &arg)
@@ -117,6 +125,10 @@ int main(int argc, char *argv[])
     try
     {
         opt();
+    }
+    catch (::argparser::help_requested_exception const &)
+    {
+        return EXIT_SUCCESS;
     }
     catch (::argparser::argument_required_exception const &e)
     {
@@ -169,14 +181,27 @@ int main(int argc, char *argv[])
         {
         case SHANNON_FANO:
         {
-            std::cout << "Compressing with Shannon-Fano ...\n";
+            if (!stats_only_output)
+                std::cout << "Compressing with Shannon-Fano ...\n";
             std::vector<uint8_t> out_buf;
             sf::txtz z(sf::compression_table);
-            std::string s(in_buf.begin(), in_buf.end());
+            std::string s;
+            if (strip_crlf)
+            {
+                std::copy_if(std::begin(in_buf), std::end(in_buf), std::back_inserter(s), [](char c)
+                             { return c != '\r' && c != '\n'; });
+            }
             std::size_t sz;
             out_buf = z.compress(s, sz);
-            std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            std::cout << (8 * s.size()) << " -> " << sz << '(' << out_buf.size() << ')' << '\n';
+            if (stats_only_output)
+            {
+                std::cout << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << '\n';
+            }
+            else
+            {
+                std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
+                std::cout << (8 * s.size()) << " bits -> " << sz << " bits (" << out_buf.size() << " bytes incl. length byte), compressed to " << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << "% of original size.\n";
+            }
             break;
         }
         case SMAZ:
@@ -202,7 +227,8 @@ int main(int argc, char *argv[])
             sf::txtz z(sf::compression_table);
             auto out_buf = z.decompress(in_buf);
             std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            std::cout << (8 * in_buf.size()) << " -> " << (8 * out_buf.size()) << '\n';
+            std::cout << '\n'
+                      << (8 * in_buf.size()) << " -> " << (8 * out_buf.size()) << '\n';
             break;
         }
         case SMAZ:

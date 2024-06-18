@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2023 Oliver Lau <oliver.lau@gmail.com>
+ Copyright (c) 2023-2024 Oliver Lau <oliver.lau@gmail.com>
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
@@ -33,13 +33,10 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <unordered_map>
 #include <vector>
 
-#include <boost/locale.hpp>
-
 #include "bintree.hpp"
-
-namespace loc = boost::locale;
 
 namespace shannon_fano
 {
@@ -47,36 +44,36 @@ namespace shannon_fano
 
     class code
     {
-        uint32_t length_;
+        uint32_t bitcount_;
         code_t bits_;
 
     public:
         code()
-            : length_(0), bits_(0) {}
+            : bitcount_(0), bits_(0) {}
         code(uint32_t len, code_t bits)
-            : length_(len), bits_(bits) {}
+            : bitcount_(len), bits_(bits) {}
         code(code const &o)
-            : length_(o.length_), bits_(o.bits_) {}
+            : bitcount_(o.bitcount_), bits_(o.bits_) {}
 
         inline void operator=(code const &o)
         {
-            length_ = o.length_;
+            bitcount_ = o.bitcount_;
             bits_ = o.bits_;
         }
 
-        inline uint32_t length() const
+        inline uint32_t bitcount(void) const
         {
-            return length_;
+            return bitcount_;
         }
 
-        inline code_t bits() const
+        inline code_t bits(void) const
         {
             return bits_;
         }
 
         inline void append(bool bit)
         {
-            bits_ |= code_t(bit) << length_++;
+            bits_ |= code_t(bit) << bitcount_++;
         }
 
         inline code operator+(bool bit)
@@ -86,7 +83,7 @@ namespace shannon_fano
             return x;
         }
 
-        std::string str() const
+        std::string str(void) const
         {
             std::ostringstream oss;
             oss << *this;
@@ -95,29 +92,65 @@ namespace shannon_fano
 
         friend std::ostream &operator<<(std::ostream &os, code const &c)
         {
-            code_t b = c.bits_;
-            for (uint32_t p = 0; p != c.length_; ++p)
+            for (code_t mask = 1U << (c.bitcount_ - 1); mask != 0; mask >>= 1)
             {
-                os << (b & 1);
-                b >>= 1;
+                os << (((c.bits_ & mask) == 0) ? '0' : '1');
             }
             return os;
         }
     };
 
+
+    /**
+     * A struct representing an n-gram in a binary tree.
+     */
     struct ngram_t
     {
+        /**
+         * The actual string of the n-gram.
+         */
         std::string token{};
+        /**
+         * The larger the value the more frequent the n-gram is.
+         */
         float weight{0};
+        /**
+         * Depending on the `weight` of the n-gram a path through 
+         * a binary tree down to the n-gram is calculated.
+         */
         code c;
     };
 
+    /**
+     * Build a binary tree with all of the n-grams given. 
+     * 
+     * Update `shannon_fano::code` field of each n-gram to reflect
+     * the path to the corresponding node in the binary tree.
+     * 
+     * @param p sorted list of n-grams
+     */
     void update(std::vector<ngram_t> &p);
 
+
+    /**
+     * A class to efficiently compress and decompress short strings.
+     */
     class txtz
     {
+        /**
+         * For compression a lookup table is needed. Each entry is
+         * indexed by the word to look up. The entry of type `code`
+         * contains a prefix free bit sequence along with a value
+         * for its length.
+         */
         std::unordered_map<std::string, code> compress_table_;
+
+        /**
+         * For decompression a binary tree is needed.
+         */
         bintree<code_t, uint32_t, std::string, uint8_t> decompress_tree_;
+
+        std::size_t max_token_length_{};
 
     public:
         explicit txtz(std::unordered_map<std::string, code> const &table)
@@ -125,51 +158,68 @@ namespace shannon_fano
         {
             for (auto const &it : compress_table_)
             {
-                decompress_tree_.append(it.second.bits(), it.second.length(), it.first);
+                decompress_tree_.append(it.second.bits(), it.second.bitcount(), it.first);
+                if (it.first.size() > max_token_length_)
+                {
+                    max_token_length_ = it.first.size();
+                }
             }
         }
 
         std::vector<uint8_t> compress(std::string const &str, std::size_t &size)
         {
             std::vector<uint8_t> data;
-            namespace blb = boost::locale::boundary;
-            loc::generator gen;
-            blb::ssegment_index map(blb::character, std::begin(str), std::end(str), gen("de_DE.UTF-8"));
-            blb::ssegment_index::iterator e = map.end();
+            std::size_t max_len = std::min(max_token_length_, str.size());
+            // write one byte with length of string
+            data.push_back(static_cast<uint8_t>(str.size()));
+            auto it = std::begin(str);
+            auto chunk_end = std::min(std::begin(str) + max_len, std::end(str));
+            auto last = std::end(str);
+            uint8_t byte = 0;
             std::size_t num_bits = 0;
             int bit_idx = 0;
-            uint8_t byte = 0;
-            data.push_back(static_cast<uint8_t>(str.size()));
-            for (blb::ssegment_index::iterator it = map.begin(); it != e; ++it)
+            while (it < last)
             {
-                if (compress_table_.find(it->str()) != compress_table_.end())
+                while (it < chunk_end)
                 {
-                    code const &c = compress_table_.at(it->str());
-                    code_t value = c.bits() << (8 * sizeof(code_t) - c.length());
-                    num_bits += c.length();
-                    // XXX: slow bit by bit encoder
-                    for (std::size_t i = 0; i < c.length(); ++i)
+                    std::string token(it, chunk_end);
+                    std::cout << " ? " << token << "\n";
+                    if (compress_table_.find(token) != compress_table_.end())
                     {
-                        byte <<= 1;
-                        constexpr code_t mask = (1U << (8 * sizeof(code_t) - 1));
-                        if ((value & mask) != 0)
+                        code const &c = compress_table_.at(token);
+                        code_t value = c.bits() << (8 * sizeof(code_t) - c.bitcount());
+                        num_bits += c.bitcount();
+                        // XXX: slow bit by bit encoder
+                        for (std::size_t i = 0; i < c.bitcount(); ++i)
                         {
-                            byte |= 1;
+                            byte <<= 1;
+                            constexpr code_t mask = (1U << (8 * sizeof(code_t) - 1));
+                            if ((value & mask) != 0)
+                            {
+                                byte |= 1;
+                            }
+                            value <<= 1;
+                            if (++bit_idx == 8)
+                            {
+                                data.push_back(byte);
+                                byte = 0;
+                                bit_idx = 0;
+                            }
                         }
-                        value <<= 1;
-                        if (++bit_idx == 8)
-                        {
-                            data.push_back(byte);
-                            byte = 0;
-                            bit_idx = 0;
-                        }
+                        std::cout << "Found " << token << ", encoded to " << c << "\n";
+                        it += token.size();
+                        chunk_end = std::min(it + max_len, std::end(str));
+                    }
+                    else
+                    {
+                        --chunk_end;
                     }
                 }
             }
-            auto remaining_bits = num_bits - data.size() * 8;
+            auto remaining_bits = data.size() * 8 - num_bits;
             if (remaining_bits > 0)
             {
-                byte <<= 8 - remaining_bits;
+                byte <<= remaining_bits;
                 data.push_back(byte);
             }
             size = num_bits;
@@ -184,7 +234,7 @@ namespace shannon_fano
         std::string decompress(std::vector<char> const &data)
         {
             std::vector<uint8_t> byte_data(data.size());
-            std::transform(data.cbegin(), data.cend(), byte_data.begin(), [](char b) -> uint8_t
+            std::transform(std::begin(data), std::end(data), std::begin(byte_data), [](char b) -> uint8_t
                            { return static_cast<uint8_t>(b); });
             return decompress_tree_.decompress(byte_data);
         }

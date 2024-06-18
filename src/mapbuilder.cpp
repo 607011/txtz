@@ -40,8 +40,6 @@
 #include <utility>
 #include <vector>
 
-#include <boost/locale.hpp>
-
 #include <nlohmann/json.hpp>
 #include <glob.h>
 #include <getopt.hpp>
@@ -50,66 +48,74 @@
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
-namespace loc = boost::locale;
 namespace sf = shannon_fano;
+
+#ifndef MAP_FILE
+#define MAP_FILE "mappings"
+#endif
 
 int main(int argc, char *argv[])
 {
     using argparser = argparser::argparser;
-    loc::boundary::boundary_type boundary = loc::boundary::boundary_type::character;
-    std::string generator_string = "de_DE.utf-8";
+    std::string table_name = MAP_FILE;
     bool split_by_phomenes = false;
     char phoneme_delim = '|';
-    bool fill_missing_monograms = false;
-    std::vector<uint8_t> missing_monograms{};
-    char histo_delim = '\t';
-    bool with_histogram = false;
+    bool fill_missing_monograms = true;
+    char histo_delim = ';';
+    bool with_histogram = true;
+    bool generate_json = false;
     std::vector<fs::path> input_paths;
+    int verbosity{};
     argparser opt(argc, argv);
+
     opt
-        .reg({"-i", "--input"}, argparser::required_argument,
+        .info("txtz token map builder", argv[0])
+        .help({"-?", "--help"}, "Display this help")
+        .reg({"-v"}, argparser::no_argument,
+             "Increase verbosity of output",
+             [&verbosity](std::string const &)
+             {
+                 ++verbosity;
+             })
+        .reg({"-i", "--input", "--input-file"}, "INPUT", argparser::required_argument,
+             "Use option multiple times to add as many input file as you want.",
              [&input_paths](std::string const &arg)
              {
                  input_paths.push_back(fs::path(arg));
              })
-        .reg({"-g", "--generator"}, argparser::required_argument,
-             [&generator_string](std::string const &arg)
+        .reg({"-m", "--map-file"}, "MAP_FILENAME", argparser::required_argument,
+             "Name of C++ and JSON file to generate (default: \"" + table_name + "\").",
+             [&table_name](std::string const &arg)
              {
-                 generator_string = arg;
+                 table_name = arg;
              })
-        .reg({"-p", "--phonemes"}, argparser::required_argument,
-             [&split_by_phomenes, &phoneme_delim, &boundary](std::string const &arg)
+        .reg({"-p", "--phoneme-delimiter", "--phoneme-delim"}, argparser::required_argument,
+             std::string("Phoneme delimiter (default: \"") + phoneme_delim + "\").",
+             [&split_by_phomenes, &phoneme_delim](std::string const &arg)
              {
                  split_by_phomenes = true;
                  phoneme_delim = arg.front();
-                 boundary = loc::boundary::boundary_type::word;
              })
-        .reg({"--fill-missing-monograms"}, argparser::optional_argument,
-             [&fill_missing_monograms, &missing_monograms](std::string const &arg)
+        .reg({"--no-fill-missing-monograms"}, argparser::no_argument,
+             "Don't add missing monograms.",
+             [&fill_missing_monograms](std::string const &)
              {
-                 fill_missing_monograms = true;
-                 if (arg.empty())
-                 {
-                     missing_monograms.clear();
-                     for (uint8_t i = 0; i != 255; ++i)
-                     {
-                         missing_monograms.push_back(i);
-                     }
-                 }
-                 else
-                 {
-                     for (auto c : arg)
-                     {
-                         missing_monograms.push_back(static_cast<uint8_t>(c));
-                     }
-                 }
+                 fill_missing_monograms = false;
              })
-        .reg({"-h", "--with-histo", "--with-histogram"}, argparser::no_argument,
+        .reg({"--no-histo", "--no-histogram"}, argparser::no_argument,
+             "The input files do not contain frequency data.",
              [&with_histogram](std::string const &)
              {
-                 with_histogram = true;
+                 with_histogram = false;
+             })
+        .reg({"--json"}, argparser::no_argument,
+             "Generate JSON map file in addition to C++ map file.",
+             [&generate_json](std::string const &)
+             {
+                 generate_json = true;
              })
         .reg({"--histo-delim"}, argparser::required_argument,
+             std::string("Histogram data delimiter (default: \"") + histo_delim + "\").",
              [&histo_delim](std::string const &arg)
              {
                  histo_delim = arg.front();
@@ -120,7 +126,13 @@ int main(int argc, char *argv[])
     }
     catch (::argparser::argument_required_exception const &e)
     {
-        std::cerr << "ERROR in command line arguments\n";
+        std::cerr << "ERROR: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    catch (::argparser::unknown_option_exception const &e)
+    {
+        std::cerr << "ERROR: " << e.what() << std::endl;
+        opt.display_help();
         return EXIT_FAILURE;
     }
     if (input_paths.empty())
@@ -129,11 +141,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    std::unordered_map<std::string, float> monograms;
-    std::unordered_map<std::string, float> phonemes;
-    // std::array<char, 4> const progress_indicator{'-', '\\', '|', '/'};
-    // int pi_idx = 0;
-    // std::size_t line_no = 0;
+    std::unordered_map<std::string, float> tokens;
     for (auto const &input_path : input_paths)
     {
         auto filenames = glob::glob(input_path.string());
@@ -148,15 +156,16 @@ int main(int argc, char *argv[])
                           << "` does not exist\n";
                 continue;
             }
-            std::cout
-                << "\rProcessing " << (input_path.parent_path() / filename).string() << " ... \u001b[K\n"
-                << std::flush;
-            loc::generator gen;
+            if (verbosity > 0)
+            {
+                std::cout
+                    << "\rProcessing " << (input_path.parent_path() / filename).string() << " ... \u001b[K\n"
+                    << std::flush;
+            }
             std::ifstream in(input_path.parent_path() / filename, std::ios::binary);
             std::string line;
             while (std::getline(in, line))
             {
-                // std::cout << progress_indicator.at((pi_idx++) % progress_indicator.size()) << "\u001b[D" << std::flush;
                 line = std::regex_replace(line, std::regex("(\n\r|\r\n|\n)+"), " ");
                 if (with_histogram)
                 {
@@ -168,81 +177,82 @@ int main(int argc, char *argv[])
                     }
                     catch (std::invalid_argument const &e)
                     {
-                        std::cerr << e.what() << '\n';
+                        std::cerr << e.what() << " in line " << line << "\"\n";
                     }
                     catch (std::out_of_range const &e)
                     {
-                        std::cerr << e.what() << '\n';
+                        std::cerr << e.what() << " in line " << line << "\"\n";
                     }
                     if (split_by_phomenes)
                     {
                         for (auto const &ph : util::split(word_histo.first, phoneme_delim))
                         {
-                            // std::cout << "`" << ph << "`: " << weight << '\n';
-                            phonemes[ph] += weight * ph.size();
+                            tokens[ph] += weight /* * ph.size() */;
                         }
                     }
-                }
-                else
-                {
-                    loc::boundary::ssegment_index map(boundary, line.begin(), line.end(), gen(generator_string));
-                    loc::boundary::ssegment_index::iterator e = map.end();
-                    for (loc::boundary::ssegment_index::iterator it = map.begin(); it != e; ++it)
+                    else
                     {
-                        monograms[it->str()] += 1;
+                        word_histo.first.erase(std::remove_if(std::begin(word_histo.first), std::end(word_histo.first), [&phoneme_delim](char c) {
+                            return c == phoneme_delim;
+                        }), std::end(word_histo.first));
+                        tokens[word_histo.first] += weight /* * word_histo.first.size() */;
                     }
                 }
             }
         }
     }
 
-    using pair_type = decltype(monograms)::value_type;
-    auto max_monogram = std::max_element(
-        std::begin(monograms), std::end(monograms),
-        [](const pair_type &p1, const pair_type &p2)
-        {
-            return p1.second < p2.second;
-        });
-    auto max_phonemes = std::max_element(
-        std::begin(phonemes), std::end(phonemes),
+    using pair_type = decltype(tokens)::value_type;
+    auto max_tokens = std::max_element(
+        std::begin(tokens), std::end(tokens),
         [](const pair_type &p1, const pair_type &p2)
         {
             return p1.second < p2.second;
         });
 
-    std::cout << '\n';
-    if (!monograms.empty())
+    if (verbosity > 0)
     {
-        std::cout << std::setw(6) << monograms.size() << " monograms; max. `" << max_monogram->first << "`   : " << max_monogram->second << '\n';
+        std::cout << "\nStatistics:\n";
+        if (!tokens.empty())
+        {
+            std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << max_tokens->first << "`   : " << max_tokens->second << '\n';
+        }
+        std::cout << std::endl;
     }
-    if (!phonemes.empty())
-    {
-        std::cout << std::setw(6) << phonemes.size() << " phonemes; max. `" << max_phonemes->first << "`   : " << max_phonemes->second << '\n';
-    }
-    std::cout << '\n';
 
     if (fill_missing_monograms)
     {
-        for (auto t : missing_monograms)
+        for (uint8_t t = 0U; t != 255U; ++t)
         {
             char c = static_cast<char>(t);
             std::string token(&c, 1);
-            if (monograms.find(token) == monograms.end())
+            if (tokens.find(token) == std::end(tokens))
             {
-                monograms[token] = 1;
+                tokens[token] = 1;
             }
         }
     }
 
+    // tokens["\0"] = 1e7f;
+
     std::vector<sf::ngram_t> ngrams;
-    std::transform(std::begin(monograms), std::end(monograms), std::back_inserter(ngrams), [](decltype(monograms)::value_type it) -> sf::ngram_t
-                   { return sf::ngram_t{it.first, it.second}; });
-    std::transform(std::begin(phonemes), std::end(phonemes), std::back_inserter(ngrams), [](decltype(phonemes)::value_type it) -> sf::ngram_t
+    std::transform(std::begin(tokens), std::end(tokens), std::back_inserter(ngrams), [](decltype(tokens)::value_type it) -> sf::ngram_t
                    { return sf::ngram_t{it.first, it.second}; });
     std::sort(std::begin(ngrams), std::end(ngrams), [](decltype(ngrams)::value_type a, decltype(ngrams)::value_type b)
               { return a.weight > b.weight; });
+
+
+    for (int i = 0; i < 200; ++i)
+    {
+        std::cout << ngrams.at(i).token << ": " << ngrams.at(i).weight << "\n";
+    }
+
     sf::update(ngrams);
 
+    if (verbosity > 0)
+    {
+        std::cout << "Writing ..." << std::flush;
+    }
     std::ostringstream cpp;
     cpp << "#include <string>\n"
         << "#include <unordered_map>\n"
@@ -250,28 +260,38 @@ int main(int argc, char *argv[])
         << "namespace shannon_fano\n"
         << "{\n"
         << "  std::unordered_map<std::string, code> compression_table = {\n";
-    json result;
+
     for (auto const &ngram : ngrams)
     {
-        result["decompress"][ngram.c.str()] = util::escaped(ngram.token);
-        result["compress"][util::escaped(ngram.token)] = json::object_t{
-            {"l", ngram.c.length()},
-            {"v", ngram.c.bits()}};
-        cpp << "    /* " << ngram.token << " */ {\"" << util::escaped(ngram.token) << "\", code(" << std::dec << ngram.c.length() << ", 0b" << ngram.c.str() << ")},\n";
+        cpp << "   {\"" << util::escaped(ngram.token) << "\", code(" << std::dec << ngram.c.bitcount() << ", 0b" << ngram.c.str() << ")},\n";
     }
     cpp << "  };\n"
         << "}\n";
-
-    // for (auto const &ngram : ngrams)
-    // {
-    //     std::cout << ngram.token << ": " << ngram.weight << ' ' << ngram.c << '\n';
-    // }
-
-    std::ofstream out(generator_string + ".json", std::ios::binary | std::ios::trunc);
-    out << result.dump();
-
-    std::ofstream cppout(generator_string + ".cpp", std::ios::binary | std::ios::trunc);
+    std::ofstream cppout(table_name + ".cpp", std::ios::binary | std::ios::trunc);
     cppout << cpp.str();
+
+    if (generate_json)
+    {
+        json result;
+        for (auto const &ngram : ngrams)
+        {
+            result["decompress"][ngram.c.str()] = util::escaped(ngram.token);
+            result["compress"][util::escaped(ngram.token)] = json::object_t{
+                {"l", ngram.c.bitcount()},
+                {"v", ngram.c.bits()}};
+        }
+        std::ofstream out(table_name + ".json", std::ios::binary | std::ios::trunc);
+        out << result.dump(2);
+    }
+
+    if (verbosity > 1)
+    {
+        for (auto const &ngram : ngrams)
+        {
+            std::cout << ngram.token << ": " << ngram.weight << ' ' << ngram.c << '\n';
+        }
+    }
+
 
     return EXIT_SUCCESS;
 }

@@ -53,16 +53,18 @@ public:
 
     std::string decompress(std::vector<StoreT> const &compressed)
     {
-        StoreT length = compressed.front();
-        auto it = std::next(compressed.cbegin());
+        // first entry contains length of decompressed data
+        int length = int(compressed.front());
+        auto it = std::next(std::begin(compressed));
         std::ostringstream oss;
         std::shared_ptr<node> n = root_;
         int bit_idx = 0;
         StoreT byte = *it;
-        while (length > 0 && it != compressed.cend())
+        while (length > 0)
         {
             if ((byte & 0b10000000) == 0)
             {
+                std::cout << '0';
                 if (n->left)
                 {
                     n = n->left;
@@ -70,6 +72,7 @@ public:
             }
             else
             {
+                std::cout << '1';
                 if (n->right)
                 {
                     n = n->right;
@@ -78,7 +81,9 @@ public:
             if (!n->left && !n->right)
             {
                 oss << n->value;
-                --length;
+                std::cout << "(" << length << " - " << n->value.size() << " = ";
+                length -= int(n->value.size());
+                std::cout << length << ") ";
                 n = root_;
             }
             if (++bit_idx == 8)
@@ -94,6 +99,9 @@ public:
         return oss.str();
     }
 
+    /**
+     * @param code 
+     */
     void append(CodeT code, LengthT length, ValueT const &token)
     {
         constexpr CodeT mask = (1U << (8 * sizeof(CodeT) - 1));

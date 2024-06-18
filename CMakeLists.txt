@@ -1,16 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 PROJECT(txtz
-	VERSION 0.9.0
+	VERSION 0.9.2
 	LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(BOOST_ROOT $ENV{BOOST_ROOT})
-find_package(Boost 1.71.0 REQUIRED COMPONENTS locale)
-message(STATUS "Boost version: ${Boost_VERSION}")
-message(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
-message(STATUS "Boost lib dirs: ${Boost_LIBRARY_DIRS}")
-message(STATUS "Boost libs: ${Boost_LIBRARIES}")
+if(NOT DEFINED HISTO_FILENAME)
+  set(HISTO_FILENAME "data/de-vornamen+histo.txt")
+endif()
 
 if (UNIX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
@@ -31,16 +28,25 @@ include_directories(
 	glob
 	smaz
 	PUBLIC
-	${Boost_INCLUDE_DIRS}
 )
+
+add_custom_command(
+	DEPENDS mapbuilder
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
+    COMMAND ./mapbuilder --map-file "${CMAKE_CURRENT_SOURCE_DIR}/src/mappings" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME}"
+)
+
+add_custom_target(GenerateMap DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp)
 
 add_executable(txtz
   src/txtz.cpp
-  src/de_DE.utf-8.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
   src/shannon-fano.cpp
   src/util.cpp
   smaz/smaz.c
 )
+
+add_dependencies(txtz GenerateMap)
 
 add_executable(mapbuilder
   src/mapbuilder.cpp
@@ -49,22 +55,14 @@ add_executable(mapbuilder
   glob/glob.cpp
 )
 
-target_link_libraries(txtz
-	${Boost_LIBRARIES}
-)
-
-target_link_libraries(mapbuilder
-	${Boost_LIBRARIES}
-)
-
-if (UNIX)
-	add_custom_command(TARGET txtz 
-	POST_BUILD
-	COMMAND strip txtz)
-	add_custom_command(TARGET mapbuilder 
-	POST_BUILD
-	COMMAND strip mapbuilder)
-endif (UNIX)
+if(UNIX AND CMAKE_BUILD_TYPE MATCHES Release)
+  add_custom_command(TARGET txtz 
+  POST_BUILD
+  COMMAND strip $<TARGET_FILE:txtz>)
+  add_custom_command(TARGET mapbuilder 
+  POST_BUILD
+  COMMAND strip $<TARGET_FILE:mapbuilder>)
+endif()
 
 install(TARGETS txtz
   CONFIGURATIONS Release
