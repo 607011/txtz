@@ -60,7 +60,6 @@ namespace shannon_fano
             while (it < chunk_end)
             {
                 std::string token(it, chunk_end);
-                std::cout << " ? " << token << "\n";
                 if (compress_table_.find(token) != compress_table_.end())
                 {
                     code const &c = compress_table_.at(token);
@@ -83,7 +82,6 @@ namespace shannon_fano
                             bit_idx = 0;
                         }
                     }
-                    // std::cout << "Found " << token << ", encoded to " << c << "\n";
                     it += token.size();
                     chunk_end = std::min(it + max_len, std::end(str));
                 }
