@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
     bool generate_json = false;
     std::vector<fs::path> input_paths;
     int verbosity{};
+    bool quiet = false;
     argparser opt(argc, argv);
 
     opt
@@ -76,6 +77,12 @@ int main(int argc, char *argv[])
              [&verbosity](std::string const &)
              {
                  ++verbosity;
+             })
+        .reg({"--quiet"}, argparser::no_argument,
+             "Don't output anything except error messages",
+             [&quiet](std::string const &)
+             {
+                 quiet = true;
              })
         .reg({"-i", "--input", "--input-file"}, "INPUT", argparser::required_argument,
              "Use option multiple times to add as many input file as you want.",
@@ -156,7 +163,7 @@ int main(int argc, char *argv[])
                           << "` does not exist\n";
                 continue;
             }
-            if (verbosity > 0)
+            if (verbosity > 0 && !quiet)
             {
                 std::cout
                     << "\rProcessing " << (input_path.parent_path() / filename).string() << " ... \u001b[K\n"
@@ -210,7 +217,7 @@ int main(int argc, char *argv[])
             return p1.second < p2.second;
         });
 
-    if (verbosity > 0)
+    if (verbosity > 0 && !quiet)
     {
         std::cout << "\nStatistics:\n";
         if (!tokens.empty())
@@ -242,14 +249,9 @@ int main(int argc, char *argv[])
               { return a.weight > b.weight; });
 
 
-    for (int i = 0; i < 200; ++i)
-    {
-        std::cout << ngrams.at(i).token << ": " << ngrams.at(i).weight << "\n";
-    }
-
     sf::update(ngrams);
 
-    if (verbosity > 0)
+    if (verbosity > 0 && !quiet)
     {
         std::cout << "Writing ..." << std::flush;
     }
@@ -284,7 +286,7 @@ int main(int argc, char *argv[])
         out << result.dump(2);
     }
 
-    if (verbosity > 1)
+    if (verbosity > 1 && !quiet)
     {
         for (auto const &ngram : ngrams)
         {

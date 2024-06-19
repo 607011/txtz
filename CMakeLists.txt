@@ -33,7 +33,7 @@ include_directories(
 add_custom_command(
 	DEPENDS mapbuilder
     OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
-    COMMAND ./mapbuilder --map-file "${CMAKE_CURRENT_SOURCE_DIR}/src/mappings" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME}"
+    COMMAND ./mapbuilder --quiet --map-file "${CMAKE_CURRENT_SOURCE_DIR}/src/mappings" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME}"
 )
 
 add_custom_target(GenerateMap DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp)
@@ -48,7 +48,17 @@ add_executable(txtz
   smaz/smaz.c
 )
 
+add_executable(checker
+  src/checker.cpp
+  src/txtz.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
+  src/code.cpp
+  src/shannon-fano.cpp
+  src/util.cpp
+)
+
 add_dependencies(txtz GenerateMap)
+add_dependencies(checker GenerateMap)
 
 add_executable(mapbuilder
   src/mapbuilder.cpp
@@ -65,6 +75,9 @@ if(UNIX AND CMAKE_BUILD_TYPE MATCHES Release)
   add_custom_command(TARGET mapbuilder 
   POST_BUILD
   COMMAND strip $<TARGET_FILE:mapbuilder>)
+  add_custom_command(TARGET checker 
+  POST_BUILD
+  COMMAND strip $<TARGET_FILE:checker>)
 endif()
 
 install(TARGETS txtz
