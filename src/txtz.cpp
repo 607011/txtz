@@ -26,8 +26,9 @@
 */
 
 #include "shannon-fano.hpp"
+#include "txtz.hpp"
 
-namespace shannon_fano
+namespace txtz
 {
 
     txtz::txtz(std::unordered_map<std::string, code> const &table)

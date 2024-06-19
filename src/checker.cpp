@@ -37,9 +37,9 @@
 
 #include "getopt.hpp"
 #include "mappings.hpp"
+#include "code.hpp"
+#include "txtz.hpp"
 #include "shannon-fano.hpp"
-
-namespace sf = shannon_fano;
 
 namespace fs = std::filesystem;
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 
     float sum_compression_rates = 0;
     std::size_t rate_count = 0;
-    sf::txtz z(sf::compression_table);
+    txtz::txtz z(txtz::compression_table);
     std::string line;
     while (std::getline(*in, line))
     {

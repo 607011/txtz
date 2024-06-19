@@ -27,9 +27,9 @@
 
 #include "shannon-fano.hpp"
 
-namespace shannon_fano
+namespace txtz
 {
-    void update(std::vector<ngram_t> &p, std::size_t l, std::size_t r, code c)
+    void shannon_fano(std::vector<ngram_t> &p, std::size_t l, std::size_t r, code c)
     {
         if (l == r)
         {
@@ -57,13 +57,13 @@ namespace shannon_fano
                 break;
             }
         }
-        update(p, l, pl, c + 0);
-        update(p, pr, r, c + 1);
+        shannon_fano(p, l, pl, c + 0);
+        shannon_fano(p, pr, r, c + 1);
     }
 
-    void update(std::vector<ngram_t> &p)
+    void shannon_fano(std::vector<ngram_t> &p)
     {
-        update(p, 0U, p.size() - 1U, code());
+        shannon_fano(p, 0U, p.size() - 1U, code());
     }
 
 }

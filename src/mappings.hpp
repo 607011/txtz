@@ -6,9 +6,9 @@
 
 #include "shannon-fano.hpp"
 
-namespace shannon_fano
+namespace txtz
 {
-    extern const std::unordered_map<std::string, shannon_fano::code> compression_table;
+    extern const std::unordered_map<std::string, txtz::code> compression_table;
 }
 
 #endif // __MAPPINGS_HPP__

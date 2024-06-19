@@ -47,7 +47,6 @@
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
-namespace sf = shannon_fano;
 
 #ifndef MAP_FILE
 #define MAP_FILE "mappings"
@@ -231,8 +230,6 @@ int main(int argc, char *argv[])
         }
         std::cout << std::endl;
     }
-    std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << max_tokens->first << "`   : " << max_tokens->second << '\n';
-    std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << min_tokens->first << "`   : " << min_tokens->second << '\n';
 
     if (fill_missing_monograms)
     {
@@ -242,20 +239,20 @@ int main(int argc, char *argv[])
             std::string token(&c, 1);
             if (tokens.find(token) == std::end(tokens))
             {
-                tokens[token] = min_tokens->second - 1;
+                tokens[token] = min_tokens->second / 2;
             }
         }
     }
 
-    tokens["\xff"] = 1e7f;
+    tokens["\xff"] = 1e1f * max_tokens->second;
 
-    std::vector<sf::ngram_t> ngrams;
-    std::transform(std::begin(tokens), std::end(tokens), std::back_inserter(ngrams), [](decltype(tokens)::value_type it) -> sf::ngram_t
-                   { return sf::ngram_t{it.first, it.second}; });
+    std::vector<txtz::ngram_t> ngrams;
+    std::transform(std::begin(tokens), std::end(tokens), std::back_inserter(ngrams), [](decltype(tokens)::value_type it) -> txtz::ngram_t
+                   { return txtz::ngram_t{it.first, it.second}; });
     std::sort(std::begin(ngrams), std::end(ngrams), [](decltype(ngrams)::value_type a, decltype(ngrams)::value_type b)
               { return a.weight > b.weight; });
 
-    sf::update(ngrams);
+    txtz::shannon_fano(ngrams);
 
     if (verbosity > 0 && !quiet)
     {
@@ -264,8 +261,8 @@ int main(int argc, char *argv[])
     std::ostringstream cpp;
     cpp << "#include <string>\n"
         << "#include <unordered_map>\n"
-        << "#include \"shannon-fano.hpp\"\n"
-        << "namespace shannon_fano\n"
+        << "#include \"code.hpp\"\n"
+        << "namespace txtz\n"
         << "{\n"
         << "  std::unordered_map<std::string, code> compression_table = {\n";
 

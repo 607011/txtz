@@ -25,9 +25,11 @@
 
 */
 
+#include "code.hpp"
 #include "shannon-fano.hpp"
 
-namespace shannon_fano
+
+namespace txtz
 {
     code::code()
         : bitcount_(0), bits_(0) {}

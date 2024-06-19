@@ -37,39 +37,10 @@
 #include <vector>
 
 #include "bintree.hpp"
+#include "code.hpp"
 
-namespace shannon_fano
+namespace txtz
 {
-    typedef unsigned long code_t;
-
-    class code
-    {
-        unsigned long bitcount_;
-        code_t bits_;
-
-    public:
-        code();
-        code(unsigned long len, code_t bits);
-        code(code const &o);
-
-        void operator=(code const &o);
-        unsigned long bitcount(void) const;
-        code_t bits(void) const;
-        void append(bool bit);
-        code operator+(bool bit);
-        std::string str(void) const;
-
-        friend std::ostream &operator<<(std::ostream &os, code const &c)
-        {
-            auto b = c.bits_;
-            for (unsigned long p = 0; p != c.bitcount_; ++p)
-            {
-                os << (b & 1);
-                b >>= 1;
-            }
-            return os;
-        }
-    };
 
     /**
      * A struct representing an n-gram in a binary tree.
@@ -94,41 +65,16 @@ namespace shannon_fano
     /**
      * Build a binary tree with all of the n-grams given.
      *
-     * Update `shannon_fano::code` field of each n-gram to reflect
+     * Update `txtz::code` field of each n-gram to reflect
      * the path to the corresponding node in the binary tree.
      *
      * @param p sorted list of n-grams
      */
-    void update(std::vector<ngram_t> &);
+    void shannon_fano(std::vector<ngram_t> &);
 
-    /**
-     * A class to efficiently compress and decompress short strings.
-     */
-    class txtz final
-    {
-    public:
-        static constexpr char STOP_TOKEN = '\xff';
-        explicit txtz(std::unordered_map<std::string, code> const &);
-        std::vector<uint8_t> compress(std::string const &, std::size_t &);
-        std::string decompress(std::vector<uint8_t> const &);
-        std::string decompress(std::vector<char> const &);
+    void huffman(std::vector<ngram_t> &);
 
-    private:
-        /**
-         * For compression a lookup table is needed. Each entry is
-         * indexed by the word to look up. The entry of type `code`
-         * contains a prefix free bit sequence along with a value
-         * for its length.
-         */
-        std::unordered_map<std::string, code> compress_table_;
 
-        /**
-         * For decompression a binary tree is needed.
-         */
-        bintree<code_t, uint32_t, std::string, uint8_t> decompress_tree_{std::string(&STOP_TOKEN, 1)};
-        std::size_t max_token_length_{};
-    };
-
-} // namespace shannon_fano
+} // namespace txtz
 
 #endif

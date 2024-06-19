@@ -41,9 +41,8 @@ extern "C"
 
 #include "getopt.hpp"
 #include "mappings.hpp"
+#include "txtz.hpp"
 #include "shannon-fano.hpp"
-
-namespace sf = shannon_fano;
 
 namespace fs = std::filesystem;
 
@@ -184,7 +183,7 @@ int main(int argc, char *argv[])
             if (!stats_only_output)
                 std::cout << "Compressing with Shannon-Fano ...\n";
             std::vector<uint8_t> out_buf;
-            sf::txtz z(sf::compression_table);
+            txtz::txtz z(txtz::compression_table);
             std::string s;
             if (strip_crlf)
             {
@@ -224,7 +223,7 @@ int main(int argc, char *argv[])
         case SHANNON_FANO:
         {
             std::cout << "Decompressing with Shannon-Fano ...\n";
-            sf::txtz z(sf::compression_table);
+            txtz::txtz z(txtz::compression_table);
             auto out_buf = z.decompress(in_buf);
             std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
             std::cout << '\n'

@@ -6,7 +6,8 @@ PROJECT(txtz
 set(CMAKE_CXX_STANDARD 17)
 
 if(NOT DEFINED HISTO_FILENAME)
-  set(HISTO_FILENAME "data/de-nachnamen+histo.txt")
+  set(HISTO_FILENAME1 "data/de-nachnamen+histo.txt")
+  set(HISTO_FILENAME2 "data/de-vornamen+histo.txt")
 endif()
 
 if (UNIX)
@@ -33,7 +34,7 @@ include_directories(
 add_custom_command(
 	DEPENDS mapbuilder
     OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
-    COMMAND ./mapbuilder --quiet --map-file "${CMAKE_CURRENT_SOURCE_DIR}/src/mappings" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME}"
+    COMMAND ./mapbuilder --quiet --map-file "${CMAKE_CURRENT_SOURCE_DIR}/src/mappings" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME1}" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME2}"
 )
 
 add_custom_target(GenerateMap DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp)
