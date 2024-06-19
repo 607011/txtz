@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2023 Oliver Lau <oliver.lau@gmail.com>
+ Copyright (c) 2023-2024 Oliver Lau <oliver@ersatzworld.net>
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
@@ -29,7 +29,6 @@
 #define __BINTREE_HPP__
 
 #include <cstdlib>
-#include <memory>
 #include <sstream>
 #include <string>
 
@@ -41,14 +40,19 @@ class bintree
 public:
     struct node
     {
-        std::shared_ptr<node> left;
-        std::shared_ptr<node> right;
-        ValueT value;
+        node *left{nullptr};
+        node *right{nullptr};
+        ValueT value{};
     };
 
-    bintree()
-        : root_(std::make_shared<node>())
+    ~bintree()
     {
+        clear();
+    }
+
+    void clear(void)
+    {
+        clear(root_);
     }
 
     std::string decompress(std::vector<StoreT> const &compressed)
@@ -57,7 +61,7 @@ public:
         int length = int(compressed.front());
         auto it = std::next(std::begin(compressed));
         std::ostringstream oss;
-        std::shared_ptr<node> n = root_;
+        node *n = root_;
         int bit_idx = 0;
         StoreT byte = *it;
         while (length > 0)
@@ -81,9 +85,7 @@ public:
             if (!n->left && !n->right)
             {
                 oss << n->value;
-                std::cout << "(" << length << " - " << n->value.size() << " = ";
                 length -= int(n->value.size());
-                std::cout << length << ") ";
                 n = root_;
             }
             if (++bit_idx == 8)
@@ -100,20 +102,20 @@ public:
     }
 
     /**
-     * @param code 
+     * @param code
      */
     void append(CodeT code, LengthT length, ValueT const &token)
     {
-        constexpr CodeT mask = (1U << (8 * sizeof(CodeT) - 1));
+        constexpr CodeT mask = (1ULL << (8 * sizeof(CodeT) - 1));
         code <<= (8 * sizeof(CodeT) - length);
-        std::shared_ptr<node> n = root_;
+        node *n = root_;
         while (length-- > 0)
         {
             if ((code & mask) == 0)
             {
                 if (!n->left)
                 {
-                    n->left = std::make_shared<node>();
+                    n->left = new node();
                 }
                 n = n->left;
             }
@@ -121,7 +123,7 @@ public:
             {
                 if (!n->right)
                 {
-                    n->right = std::make_shared<node>();
+                    n->right = new node();
                 }
                 n = n->right;
             }
@@ -130,7 +132,7 @@ public:
         n->value = token;
     }
 
-    bool find(ValueT const &token, std::shared_ptr<node> root)
+    bool find(ValueT const &token, node *root)
     {
         if (!root->left && !root->right)
         {
@@ -152,7 +154,7 @@ public:
         return find(token, root_);
     }
 
-    void print(std::shared_ptr<node> root, std::ostream &out) const
+    void print(node *root, std::ostream &out) const
     {
         if (!root->left && !root->right)
         {
@@ -178,7 +180,20 @@ public:
     }
 
 private:
-    std::shared_ptr<node> root_;
+    node *root_{new node};
+
+    void clear(node *root)
+    {
+        if (root->left == nullptr && root->right == nullptr)
+        {
+            delete root;
+            return;
+        }
+        if (root->left)
+            clear(root->left);
+        if (root->right)
+            clear(root->right);
+    }
 };
 
 #endif // __BINTREE_HPP__

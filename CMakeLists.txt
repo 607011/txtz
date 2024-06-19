@@ -6,7 +6,7 @@ PROJECT(txtz
 set(CMAKE_CXX_STANDARD 17)
 
 if(NOT DEFINED HISTO_FILENAME)
-  set(HISTO_FILENAME "data/de-vornamen+histo.txt")
+  set(HISTO_FILENAME "data/de-nachnamen+histo.txt")
 endif()
 
 if (UNIX)
@@ -39,8 +39,10 @@ add_custom_command(
 add_custom_target(GenerateMap DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp)
 
 add_executable(txtz
+  src/txtz-main.cpp
   src/txtz.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
+  src/code.cpp
   src/shannon-fano.cpp
   src/util.cpp
   smaz/smaz.c
@@ -50,6 +52,7 @@ add_dependencies(txtz GenerateMap)
 
 add_executable(mapbuilder
   src/mapbuilder.cpp
+  src/code.cpp
   src/shannon-fano.cpp
   src/util.cpp
   glob/glob.cpp

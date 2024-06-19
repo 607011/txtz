@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2023-2024 Oliver Lau <oliver.lau@gmail.com>
+ Copyright (c) 2023-2024 Oliver Lau <oliver@ersatzworld.net>
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
@@ -25,228 +25,95 @@
 
 */
 
-#include <algorithm>
-#include <cstdlib>
-#include <filesystem>
-#include <fstream>
-#include <iterator>
-#include <memory>
-#include <unordered_map>
-#include <vector>
-
-extern "C"
-{
-#include "smaz.h"
-}
-
-#include "getopt.hpp"
-#include "mappings.hpp"
 #include "shannon-fano.hpp"
 
-namespace sf = shannon_fano;
-
-namespace fs = std::filesystem;
-
-namespace
+namespace shannon_fano
 {
-    typedef enum
-    {
-        INVALID_OP,
-        COMPRESS,
-        DECOMPRESS,
-    } opmode_t;
 
-    typedef enum
+    txtz::txtz(std::unordered_map<std::string, code> const &table)
+        : compress_table_(table)
     {
-        INVALID_ALGO,
-        SMAZ,
-        SHANNON_FANO,
-    } algo_t;
-}
-
-auto is_deleter = [](std::istream *ptr) -> void
-{
-    if (ptr != nullptr && ptr != &std::cin)
-    {
-        static_cast<std::ifstream *>(ptr)->close();
-        delete ptr;
-    }
-};
-
-auto os_deleter = [](std::ostream *ptr) -> void
-{
-    if (ptr != nullptr && ptr != &std::cout)
-    {
-        static_cast<std::ofstream *>(ptr)->close();
-        delete ptr;
-    }
-};
-
-int main(int argc, char *argv[])
-{
-    using argparser = argparser::argparser;
-    argparser opt(argc, argv);
-    opmode_t op = INVALID_OP;
-    algo_t algo = SHANNON_FANO;
-    bool strip_crlf = true;
-    bool stats_only_output = false;
-    std::string input_filename;
-    std::string output_filename;
-    std::unique_ptr<std::istream, decltype(is_deleter)> in{nullptr, is_deleter};
-    std::unique_ptr<std::ostream, decltype(os_deleter)> out{nullptr, os_deleter};
-    opt
-        .info("txtz", argv[0])
-        .help({"-?", "--help"}, "Display this help")
-        .reg({"-a", "--algo", "--algorithm"}, "ALGORITHM", argparser::required_argument,
-             "compression algorithm, either SF (Shannon-Fano) or SMAZ (default: SF)",
-             [&algo](std::string const &arg)
-             {
-                 if (arg == "sf" || arg == "SF" || arg == "shannon-fano" || arg == "SHANNON-FANO")
-                 {
-                     algo = SHANNON_FANO;
-                 }
-                 else if (arg == "smaz" || arg == "SMAZ")
-                 {
-                     algo = SMAZ;
-                 }
-             })
-        .reg({"-d", "--decompress"}, argparser::no_argument, "Decompress data", [&op](std::string const &)
-             { op = DECOMPRESS; })
-        .reg({"-c", "--compress"}, argparser::no_argument, "Compress data", [&op](std::string const &)
-             { op = COMPRESS; })
-        .reg({"--no-remove-crlf"}, argparser::no_argument, "Don't remove CR/LF from input.", [&strip_crlf](std::string const &)
-             { strip_crlf = false; })
-        .reg({"--stats", "--stats-only"}, argparser::no_argument, "Only output compression statistics.", [&stats_only_output](std::string const &)
-             { stats_only_output = true; })
-        .reg({"-i", "--input-file"}, "INPUT_FILENAME", argparser::required_argument, "input file", [&input_filename](std::string const &arg)
-             { input_filename = arg; })
-        .reg({"-o", "--output-file"}, "OUTPUT_FILENAME", argparser::required_argument, "Where the output goes to", [&output_filename](std::string const &arg)
-             { output_filename = arg; });
-    try
-    {
-        opt();
-    }
-    catch (::argparser::help_requested_exception const &)
-    {
-        return EXIT_SUCCESS;
-    }
-    catch (::argparser::argument_required_exception const &e)
-    {
-        std::cerr << "\u001b[31;1mERROR: " << e.what() << "\u001b[0m\n";
-        return EXIT_FAILURE;
-    }
-    catch (std::exception const &e)
-    {
-        std::cerr << "\u001b[31;1mERROR: " << e.what() << "\u001b[0m\n";
-        return EXIT_FAILURE;
-    }
-
-    if (op == INVALID_OP)
-    {
-        std::cerr << "\u001b[31;1mERROR: operation mode missing, please give -c or -d.\u001b[0m\n";
-        return EXIT_FAILURE;
-    }
-
-    if (input_filename.empty())
-    {
-        in.reset(&std::cin);
-    }
-    else
-    {
-        if (!fs::exists(input_filename))
+        for (auto const &it : compress_table_)
         {
-            std::cerr << "\u001b[31;1mERROR: input file '" << input_filename << "' doesn't exist.\u001b[0m\n";
-            return EXIT_FAILURE;
-        }
-        in.reset(new std::ifstream(input_filename, std::ios::binary));
-    }
-
-    if (output_filename.empty())
-    {
-        out.reset(&std::cout);
-    }
-    else
-    {
-        out.reset(new std::ofstream(output_filename, std::ios::trunc | std::ios::binary));
-    }
-
-    std::size_t out_len;
-    std::vector<char> in_buf(std::istreambuf_iterator<char>(*in), {});
-    constexpr std::size_t SMAZ_SAFETY_MARGIN = 10;
-    switch (op)
-    {
-    case COMPRESS:
-    {
-        switch (algo)
-        {
-        case SHANNON_FANO:
-        {
-            if (!stats_only_output)
-                std::cout << "Compressing with Shannon-Fano ...\n";
-            std::vector<uint8_t> out_buf;
-            sf::txtz z(sf::compression_table);
-            std::string s;
-            if (strip_crlf)
+            decompress_tree_.append(it.second.bits(), it.second.bitcount(), it.first);
+            if (it.first.size() > max_token_length_)
             {
-                std::copy_if(std::begin(in_buf), std::end(in_buf), std::back_inserter(s), [](char c)
-                             { return c != '\r' && c != '\n'; });
+                max_token_length_ = it.first.size();
             }
-            std::size_t sz;
-            out_buf = z.compress(s, sz);
-            if (stats_only_output)
-            {
-                std::cout << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << '\n';
-            }
-            else
-            {
-                std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-                std::cout << (8 * s.size()) << " bits -> " << sz << " bits (" << out_buf.size() << " bytes incl. length byte), compressed to " << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << "% of original size.\n";
-            }
-            break;
         }
-        case SMAZ:
-        {
-            std::vector<char> out_buf(SMAZ_SAFETY_MARGIN * in_buf.size());
-            out_len = static_cast<std::size_t>(smaz_compress(in_buf.data(), static_cast<int>(in_buf.size()), out_buf.data(), static_cast<int>(out_buf.size())));
-            out_buf.resize(static_cast<std::size_t>(out_len));
-            std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            break;
-        }
-        default:
-            break;
-        }
-        break;
-    }
-    case DECOMPRESS:
-    {
-        switch (algo)
-        {
-        case SHANNON_FANO:
-        {
-            std::cout << "Decompressing with Shannon-Fano ...\n";
-            sf::txtz z(sf::compression_table);
-            auto out_buf = z.decompress(in_buf);
-            std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            std::cout << '\n'
-                      << (8 * in_buf.size()) << " -> " << (8 * out_buf.size()) << '\n';
-            break;
-        }
-        case SMAZ:
-        {
-            std::vector<char> out_buf(SMAZ_SAFETY_MARGIN * in_buf.size());
-            out_len = static_cast<std::size_t>(smaz_decompress(in_buf.data(), static_cast<int>(in_buf.size()), out_buf.data(), static_cast<int>(out_buf.size())));
-            out_buf.resize(static_cast<std::size_t>(out_len));
-            std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            break;
-        }
-        default:
-            break;
-        }
-        break;
-    }
-    case INVALID_OP: // will never be reached
-        break;
     }
 
-    return EXIT_SUCCESS;
+    std::vector<uint8_t> txtz::compress(std::string const &str, std::size_t &size)
+    {
+        std::vector<uint8_t> data;
+        std::size_t max_len = std::min(max_token_length_, str.size());
+        // write one byte with length of string
+        data.push_back(static_cast<uint8_t>(str.size()));
+        auto it = std::begin(str);
+        auto chunk_end = std::min(std::begin(str) + max_len, std::end(str));
+        auto last = std::end(str);
+        uint8_t byte = 0;
+        std::size_t num_bits = 0;
+        int bit_idx = 0;
+        while (it < last)
+        {
+            while (it < chunk_end)
+            {
+                std::string token(it, chunk_end);
+                std::cout << " ? " << token << "\n";
+                if (compress_table_.find(token) != compress_table_.end())
+                {
+                    code const &c = compress_table_.at(token);
+                    code_t value = c.bits() << (8 * sizeof(code_t) - c.bitcount());
+                    num_bits += c.bitcount();
+                    // XXX: slow bit by bit encoder
+                    for (std::size_t i = 0; i < c.bitcount(); ++i)
+                    {
+                        byte <<= 1;
+                        constexpr code_t mask = (1ULL << (8 * sizeof(code_t) - 1));
+                        if ((value & mask) != 0)
+                        {
+                            byte |= 1;
+                        }
+                        value <<= 1;
+                        if (++bit_idx == 8)
+                        {
+                            data.push_back(byte);
+                            byte = 0;
+                            bit_idx = 0;
+                        }
+                    }
+                    // std::cout << "Found " << token << ", encoded to " << c << "\n";
+                    it += token.size();
+                    chunk_end = std::min(it + max_len, std::end(str));
+                }
+                else
+                {
+                    --chunk_end;
+                }
+            }
+        }
+        auto remaining_bits = data.size() * 8 - num_bits;
+        if (remaining_bits > 0)
+        {
+            byte <<= remaining_bits;
+            data.push_back(byte);
+        }
+        size = num_bits;
+        return data;
+    }
+
+    std::string txtz::decompress(std::vector<uint8_t> const &data)
+    {
+        return decompress_tree_.decompress(data);
+    }
+
+    std::string txtz::decompress(std::vector<char> const &data)
+    {
+        std::vector<uint8_t> byte_data(data.size());
+        std::transform(std::begin(data), std::end(data), std::begin(byte_data), [](char b) -> uint8_t
+                       { return static_cast<uint8_t>(b); });
+        return decompress_tree_.decompress(byte_data);
+    }
+
 }

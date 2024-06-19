@@ -29,41 +29,46 @@
 
 namespace shannon_fano
 {
-    void update(std::vector<ngram_t> &p, std::size_t l, std::size_t r, code c)
+    code::code()
+        : bitcount_(0), bits_(0) {}
+    code::code(unsigned long len, code_t bits)
+        : bitcount_(len), bits_(bits) {}
+    code::code(code const &o)
+        : bitcount_(o.bitcount_), bits_(o.bits_) {}
+
+    void code::operator=(code const &o)
     {
-        if (l == r)
-        {
-            p[l].c = c;
-            return;
-        }
-        std::size_t pl = l;
-        std::size_t pr = r;
-        auto wl = p.at(pl).weight;
-        auto wr = p.at(pr).weight;
-        for (;;)
-        {
-            while (wr < wl && pr != pl + 1)
-            {
-                --pr;
-                wr += p.at(pr).weight;
-            }
-            if (pr != pl + 1)
-            {
-                ++pl;
-                wl += p.at(pl).weight;
-            }
-            else
-            {
-                break;
-            }
-        }
-        update(p, l, pl, c + 0);
-        update(p, pr, r, c + 1);
+        bitcount_ = o.bitcount_;
+        bits_ = o.bits_;
     }
 
-    void update(std::vector<ngram_t> &p)
+    unsigned long code::bitcount(void) const
     {
-        update(p, 0U, p.size() - 1U, code());
+        return bitcount_;
+    }
+
+    code_t code::bits(void) const
+    {
+        return bits_;
+    }
+
+    void code::append(bool bit)
+    {
+        bits_ |= code_t(bit) << bitcount_++;
+    }
+
+    code code::operator+(bool bit)
+    {
+        code x{*this};
+        x.append(bit);
+        return x;
+    }
+
+    std::string code::str(void) const
+    {
+        std::ostringstream oss;
+        oss << *this;
+        return oss.str();
     }
 
 }
