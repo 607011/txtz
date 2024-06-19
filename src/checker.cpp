@@ -115,6 +115,8 @@ int main(int argc, char *argv[])
         in.reset(new std::ifstream(input_filename, std::ios::binary));
     }
 
+    float sum_compression_rates = 0;
+    std::size_t rate_count = 0;
     sf::txtz z(sf::compression_table);
     std::string line;
     while (std::getline(*in, line))
@@ -124,15 +126,17 @@ int main(int argc, char *argv[])
         word_histo.first.erase(std::remove_if(std::begin(word_histo.first), std::end(word_histo.first), [&phoneme_delim](char c)
                                               { return c == phoneme_delim; }),
                                std::end(word_histo.first));
+        const auto weight = std::stoull(word_histo.second);
         // remove all CR/LF
         std::string s;
         std::copy_if(std::begin(word_histo.first), std::end(word_histo.first), std::back_inserter(s), [](char c)
                      { return c != '\r' && c != '\n'; });
-        std::cout << s << ' ';
+        std::cout << s << " (" << weight << ") ";
         std::size_t sz;
         std::vector<uint8_t> out_buf;
         out_buf = z.compress(s, sz);
-
+        sum_compression_rates += float(out_buf.size()) / (float(s.size())) * weight;
+        rate_count += weight;
         const std::string &out_word = z.decompress(out_buf);
         if (out_word == word_histo.first)
         {
@@ -147,5 +151,6 @@ int main(int argc, char *argv[])
         }
     }
     std::cout << "\nSUCCESS!\n";
+    std::cout << "avg. compression rate: " << 1e2f * sum_compression_rates / rate_count << "%\n";
     return EXIT_SUCCESS;
 }
