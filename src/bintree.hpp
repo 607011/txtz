@@ -47,11 +47,6 @@ public:
 
     ~bintree()
     {
-        clear();
-    }
-
-    void clear(void)
-    {
         clear(root_);
     }
 
@@ -68,7 +63,6 @@ public:
         {
             if ((byte & 0b10000000) == 0)
             {
-                std::cout << '0';
                 if (n->left)
                 {
                     n = n->left;
@@ -76,7 +70,6 @@ public:
             }
             else
             {
-                std::cout << '1';
                 if (n->right)
                 {
                     n = n->right;
@@ -132,9 +125,9 @@ public:
         n->value = token;
     }
 
-    bool find(ValueT const &token, node *root)
+    static bool find(ValueT const &token, const node *const root)
     {
-        if (!root->left && !root->right)
+        if (root->left == nullptr && root->right == nullptr)
         {
             return root->value == token;
         }
@@ -149,12 +142,12 @@ public:
         return false;
     }
 
-    bool find(ValueT const &token)
+    bool has(ValueT const &token) const
     {
         return find(token, root_);
     }
 
-    void print(node *root, std::ostream &out) const
+    static void print(node *root, std::ostream &out)
     {
         if (!root->left && !root->right)
         {
@@ -182,7 +175,7 @@ public:
 private:
     node *root_{new node};
 
-    void clear(node *root)
+    static void clear(node *root)
     {
         if (root->left == nullptr && root->right == nullptr)
         {
