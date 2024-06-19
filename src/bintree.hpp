@@ -149,14 +149,14 @@ public:
 
     static void print(node *root, std::ostream &out)
     {
-        if (!root->left && !root->right)
+        if (root->left == nullptr && root->right == nullptr)
         {
             out << ' ' << util::escaped(root->value) << '\n';
         }
-        if (root->left, out)
+        if (root->left)
         {
             out << '0';
-            print(root->left);
+            print(root->left, out);
         }
         if (root->right)
         {
