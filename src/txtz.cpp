@@ -45,15 +45,14 @@ namespace shannon_fano
 
     std::vector<uint8_t> txtz::compress(std::string const &str, std::size_t &size)
     {
-        std::vector<uint8_t> data;
-        std::size_t max_len = std::min(max_token_length_, str.size());
-        // write one byte with length of string
-        data.push_back(static_cast<uint8_t>(str.size()));
-        auto it = std::begin(str);
-        auto chunk_end = std::min(std::begin(str) + max_len, std::end(str));
-        auto last = std::end(str);
+        std::vector<uint8_t> compressed_data;
+        const std::string &uncompressed = str + STOP_TOKEN;
+        const std::size_t max_len = std::min(max_token_length_, uncompressed.size());
+        auto it = std::begin(uncompressed);
+        auto chunk_end = std::min(std::begin(uncompressed) + max_len, std::end(uncompressed));
+        const auto last = std::end(uncompressed);
         uint8_t byte = 0;
-        std::size_t num_bits = 0;
+        long num_bits = 0;
         int bit_idx = 0;
         while (it < last)
         {
@@ -64,7 +63,7 @@ namespace shannon_fano
                 {
                     code const &c = compress_table_.at(token);
                     code_t value = c.bits() << (8 * sizeof(code_t) - c.bitcount());
-                    num_bits += c.bitcount();
+                    num_bits += static_cast<long>(c.bitcount());
                     // XXX: slow bit by bit encoder
                     for (std::size_t i = 0; i < c.bitcount(); ++i)
                     {
@@ -74,16 +73,19 @@ namespace shannon_fano
                         {
                             byte |= 1;
                         }
+                        else
+                        {
+                        }
                         value <<= 1;
                         if (++bit_idx == 8)
                         {
-                            data.push_back(byte);
-                            byte = 0;
+                            compressed_data.push_back(byte);
+                            byte = 0b00000000;
                             bit_idx = 0;
                         }
                     }
                     it += token.size();
-                    chunk_end = std::min(it + max_len, std::end(str));
+                    chunk_end = std::min(it + max_len, std::end(uncompressed));
                 }
                 else
                 {
@@ -91,14 +93,13 @@ namespace shannon_fano
                 }
             }
         }
-        auto remaining_bits = data.size() * 8 - num_bits;
-        if (remaining_bits > 0)
+        if (bit_idx > 0)
         {
-            byte <<= remaining_bits;
-            data.push_back(byte);
+            byte <<= 8 - bit_idx;
+            compressed_data.push_back(byte);
         }
         size = num_bits;
-        return data;
+        return compressed_data;
     }
 
     std::string txtz::decompress(std::vector<uint8_t> const &data)

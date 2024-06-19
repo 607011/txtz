@@ -99,13 +99,21 @@ namespace shannon_fano
      *
      * @param p sorted list of n-grams
      */
-    void update(std::vector<ngram_t> &p);
+    void update(std::vector<ngram_t> &);
 
     /**
      * A class to efficiently compress and decompress short strings.
      */
-    class txtz
+    class txtz final
     {
+    public:
+        static constexpr char STOP_TOKEN = '\xff';
+        explicit txtz(std::unordered_map<std::string, code> const &);
+        std::vector<uint8_t> compress(std::string const &, std::size_t &);
+        std::string decompress(std::vector<uint8_t> const &);
+        std::string decompress(std::vector<char> const &);
+
+    private:
         /**
          * For compression a lookup table is needed. Each entry is
          * indexed by the word to look up. The entry of type `code`
@@ -117,15 +125,8 @@ namespace shannon_fano
         /**
          * For decompression a binary tree is needed.
          */
-        bintree<code_t, uint32_t, std::string, uint8_t> decompress_tree_;
-
+        bintree<code_t, uint32_t, std::string, uint8_t> decompress_tree_{std::string(&STOP_TOKEN, 1)};
         std::size_t max_token_length_{};
-
-    public:
-        explicit txtz(std::unordered_map<std::string, code> const &table);
-        std::vector<uint8_t> compress(std::string const &str, std::size_t &size);
-        std::string decompress(std::vector<uint8_t> const &data);
-        std::string decompress(std::vector<char> const &data);
     };
 
 } // namespace shannon_fano

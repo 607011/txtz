@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
             else
             {
                 std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-                std::cout << (8 * s.size()) << " bits -> " << sz << " bits (" << out_buf.size() << " bytes incl. length byte), compressed to " << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << "% of original size.\n";
+                std::cout << (8 * s.size()) << " bits -> " << sz << " bits (" << out_buf.size() << " bytes), compressed to " << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << "% of original size.\n";
             }
             break;
         }

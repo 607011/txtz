@@ -198,9 +198,9 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
-                        word_histo.first.erase(std::remove_if(std::begin(word_histo.first), std::end(word_histo.first), [&phoneme_delim](char c) {
-                            return c == phoneme_delim;
-                        }), std::end(word_histo.first));
+                        word_histo.first.erase(std::remove_if(std::begin(word_histo.first), std::end(word_histo.first), [&phoneme_delim](char c)
+                                                              { return c == phoneme_delim; }),
+                                               std::end(word_histo.first));
                         tokens[word_histo.first] += weight /* * word_histo.first.size() */;
                     }
                 }
@@ -210,6 +210,12 @@ int main(int argc, char *argv[])
 
     using pair_type = decltype(tokens)::value_type;
     auto max_tokens = std::max_element(
+        std::begin(tokens), std::end(tokens),
+        [](const pair_type &p1, const pair_type &p2)
+        {
+            return p1.second < p2.second;
+        });
+    auto min_tokens = std::min_element(
         std::begin(tokens), std::end(tokens),
         [](const pair_type &p1, const pair_type &p2)
         {
@@ -225,28 +231,29 @@ int main(int argc, char *argv[])
         }
         std::cout << std::endl;
     }
+    std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << max_tokens->first << "`   : " << max_tokens->second << '\n';
+    std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << min_tokens->first << "`   : " << min_tokens->second << '\n';
 
     if (fill_missing_monograms)
     {
-        for (uint8_t t = 0U; t != 255U; ++t)
+        for (uint8_t t = 0U; t < 0xFF; ++t)
         {
             char c = static_cast<char>(t);
             std::string token(&c, 1);
             if (tokens.find(token) == std::end(tokens))
             {
-                tokens[token] = 1;
+                tokens[token] = min_tokens->second - 1;
             }
         }
     }
 
-    // tokens["\0"] = 1e7f;
+    tokens["\xff"] = 1e7f;
 
     std::vector<sf::ngram_t> ngrams;
     std::transform(std::begin(tokens), std::end(tokens), std::back_inserter(ngrams), [](decltype(tokens)::value_type it) -> sf::ngram_t
                    { return sf::ngram_t{it.first, it.second}; });
     std::sort(std::begin(ngrams), std::end(ngrams), [](decltype(ngrams)::value_type a, decltype(ngrams)::value_type b)
               { return a.weight > b.weight; });
-
 
     sf::update(ngrams);
 
@@ -292,7 +299,6 @@ int main(int argc, char *argv[])
             std::cout << ngram.token << ": " << ngram.weight << ' ' << ngram.c << '\n';
         }
     }
-
 
     return EXIT_SUCCESS;
 }

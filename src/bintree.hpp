@@ -45,6 +45,8 @@ public:
         ValueT value{};
     };
 
+    bintree(ValueT stop_value) : stop_value_(stop_value) {}
+
     ~bintree()
     {
         clear(root_);
@@ -52,14 +54,12 @@ public:
 
     std::string decompress(std::vector<StoreT> const &compressed)
     {
-        // first entry contains length of decompressed data
-        int length = int(compressed.front());
-        auto it = std::next(std::begin(compressed));
+        auto it = std::begin(compressed);
         std::ostringstream oss;
         node *n = root_;
         int bit_idx = 0;
         StoreT byte = *it;
-        while (length > 0)
+        for (;;)
         {
             if ((byte & 0b10000000) == 0)
             {
@@ -77,8 +77,9 @@ public:
             }
             if (!n->left && !n->right)
             {
+                if (n->value == stop_value_)
+                    break;
                 oss << n->value;
-                length -= int(n->value.size());
                 n = root_;
             }
             if (++bit_idx == 8)
@@ -174,6 +175,7 @@ public:
 
 private:
     node *root_{new node};
+    ValueT stop_value_;
 
     static void clear(node *root)
     {
