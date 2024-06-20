@@ -51,13 +51,6 @@ namespace
         COMPRESS,
         DECOMPRESS,
     } opmode_t;
-
-    typedef enum
-    {
-        INVALID_ALGO,
-        SMAZ,
-        SHANNON_FANO,
-    } algo_t;
 }
 
 auto is_deleter = [](std::istream *ptr) -> void
