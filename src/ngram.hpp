@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2023-2024 Oliver Lau <oliver@ersatzworld.net>
+ Copyright (c) 2024 Oliver Lau <oliver@ersatzworld.net>
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
@@ -25,25 +25,35 @@
 
 */
 
-#ifndef __SHANNON_FANO_HPP__
-#define __SHANNON_FANO_HPP__
+#ifndef __NGRAM_HPP__
+#define __NGRAM_HPP__
 
-#include <vector>
+#include <string>
 
-#include "ngram.hpp"
+#include "code.hpp"
 
 namespace txtz
 {
-    /**
-     * Using the Shannon-Fano algorithm, build a binary tree with all of the n-grams given.
-     *
-     * Update `txtz::code` field of each n-gram to reflect
-     * the path to the corresponding node in the binary tree.
-     *
-     * @param p sorted list of n-grams
-     */
-    void shannon_fano(std::vector<ngram_t> &, bool do_sort = true);
 
-} // namespace txtz
+    /**
+     * A struct representing an n-gram in a binary tree.
+     */
+    struct ngram_t
+    {
+        /**
+         * The actual string of the n-gram.
+         */
+        std::string token{};
+        /**
+         * The larger the value the more frequent the n-gram is.
+         */
+        float weight{0};
+        /**
+         * Depending on the `weight` of the n-gram a path through
+         * a binary tree down to the n-gram is calculated.
+         */
+        code c;
+    };
+}
 
 #endif

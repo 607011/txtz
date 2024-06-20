@@ -5,9 +5,13 @@ PROJECT(txtz
 
 set(CMAKE_CXX_STANDARD 17)
 
-if(NOT DEFINED HISTO_FILENAME)
+if(NOT DEFINED HISTO_FILENAME1 AND NOT DEFINED HISTO_FILENAME2)
   set(HISTO_FILENAME1 "data/de-nachnamen+histo.txt")
   set(HISTO_FILENAME2 "data/de-vornamen+histo.txt")
+endif()
+
+if(NOT DEFINED MAPBUILDING_ALGO)
+  set(MAPBUILDING_ALGO "huffman")
 endif()
 
 if (UNIX)
@@ -27,7 +31,6 @@ include_directories(
 	getopt-cpp/include
 	json/include
 	glob
-	smaz
 	PUBLIC
 )
 
@@ -39,14 +42,21 @@ add_custom_command(
 
 add_custom_target(GenerateMap DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp)
 
+if(MAPBUILDING_ALGO STREQUAL "huffman")
+  add_definitions(-DALGO_HUFFMAN)
+elseif(MAPBUILDING_ALGO STREQUAL "shannon-fano")
+  add_definitions(-DALGO_SHANNON_FANO)
+else()
+endif()
+
 add_executable(txtz
   src/txtz-main.cpp
   src/txtz.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
   src/code.cpp
   src/shannon-fano.cpp
+  src/huffman.cpp
   src/util.cpp
-  smaz/smaz.c
 )
 
 add_executable(checker
@@ -55,6 +65,7 @@ add_executable(checker
   ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
   src/code.cpp
   src/shannon-fano.cpp
+  src/huffman.cpp
   src/util.cpp
 )
 
@@ -65,6 +76,7 @@ add_executable(mapbuilder
   src/mapbuilder.cpp
   src/code.cpp
   src/shannon-fano.cpp
+  src/huffman.cpp
   src/util.cpp
   glob/glob.cpp
 )

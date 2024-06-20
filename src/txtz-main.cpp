@@ -34,11 +34,6 @@
 #include <unordered_map>
 #include <vector>
 
-extern "C"
-{
-#include "smaz.h"
-}
-
 #include "getopt.hpp"
 #include "mappings.hpp"
 #include "txtz.hpp"
@@ -54,13 +49,6 @@ namespace
         COMPRESS,
         DECOMPRESS,
     } opmode_t;
-
-    typedef enum
-    {
-        INVALID_ALGO,
-        SMAZ,
-        SHANNON_FANO,
-    } algo_t;
 }
 
 auto is_deleter = [](std::istream *ptr) -> void
@@ -86,7 +74,6 @@ int main(int argc, char *argv[])
     using argparser = argparser::argparser;
     argparser opt(argc, argv);
     opmode_t op = INVALID_OP;
-    algo_t algo = SHANNON_FANO;
     bool strip_crlf = true;
     bool stats_only_output = false;
     std::string input_filename;
@@ -96,19 +83,6 @@ int main(int argc, char *argv[])
     opt
         .info("txtz", argv[0])
         .help({"-?", "--help"}, "Display this help")
-        .reg({"-a", "--algo", "--algorithm"}, "ALGORITHM", argparser::required_argument,
-             "compression algorithm, either SF (Shannon-Fano) or SMAZ (default: SF)",
-             [&algo](std::string const &arg)
-             {
-                 if (arg == "sf" || arg == "SF" || arg == "shannon-fano" || arg == "SHANNON-FANO")
-                 {
-                     algo = SHANNON_FANO;
-                 }
-                 else if (arg == "smaz" || arg == "SMAZ")
-                 {
-                     algo = SMAZ;
-                 }
-             })
         .reg({"-d", "--decompress"}, argparser::no_argument, "Decompress data", [&op](std::string const &)
              { op = DECOMPRESS; })
         .reg({"-c", "--compress"}, argparser::no_argument, "Compress data", [&op](std::string const &)
@@ -169,78 +143,53 @@ int main(int argc, char *argv[])
         out.reset(new std::ofstream(output_filename, std::ios::trunc | std::ios::binary));
     }
 
-    std::size_t out_len;
     std::vector<char> in_buf(std::istreambuf_iterator<char>(*in), {});
-    constexpr std::size_t SMAZ_SAFETY_MARGIN = 10;
+    txtz::txtz z(txtz::compression_table);
+
     switch (op)
     {
     case COMPRESS:
     {
-        switch (algo)
+        if (!stats_only_output)
         {
-        case SHANNON_FANO:
-        {
-            if (!stats_only_output)
-                std::cout << "Compressing with Shannon-Fano ...\n";
-            std::vector<uint8_t> out_buf;
-            txtz::txtz z(txtz::compression_table);
-            std::string s;
-            if (strip_crlf)
-            {
-                std::copy_if(std::begin(in_buf), std::end(in_buf), std::back_inserter(s), [](char c)
-                             { return c != '\r' && c != '\n'; });
-            }
-            std::size_t sz;
-            out_buf = z.compress(s, sz);
-            if (stats_only_output)
-            {
-                std::cout << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << '\n';
-            }
-            else
-            {
-                std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-                std::cout << (8 * s.size()) << " bits -> " << sz << " bits (" << out_buf.size() << " bytes), compressed to " << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << "% of original size.\n";
-            }
-            break;
+            std::cout << "Compressing with " <<
+#if defined(ALGO_HUFFMAN)
+                "Huffmann"
+#elif defined(ALGO_SHANNON_FANO)
+                "Shannon-Fano"
+#else
+#error "Invalid map building algorithm. Define one of ALGO_HUFFMAN or ALGO_SHANNON_FANO!"
+#endif
+                      << " encoded binary tree ...\n";
         }
-        case SMAZ:
+        std::string s;
+        if (strip_crlf)
         {
-            std::vector<char> out_buf(SMAZ_SAFETY_MARGIN * in_buf.size());
-            out_len = static_cast<std::size_t>(smaz_compress(in_buf.data(), static_cast<int>(in_buf.size()), out_buf.data(), static_cast<int>(out_buf.size())));
-            out_buf.resize(static_cast<std::size_t>(out_len));
+            std::copy_if(std::begin(in_buf), std::end(in_buf), std::back_inserter(s), [](char c)
+                         { return c != '\r' && c != '\n'; });
+        }
+        std::vector<uint8_t> out_buf;
+        std::size_t sz;
+        out_buf = z.compress(s, sz);
+        if (stats_only_output)
+        {
+            std::cout << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << '\n';
+        }
+        else
+        {
             std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            break;
-        }
-        default:
-            break;
+            std::cout << (8 * s.size()) << " bits -> " << sz << " bits (" << out_buf.size() << " bytes), compressed to " << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size())) << "% of original size.\n";
         }
         break;
     }
     case DECOMPRESS:
     {
-        switch (algo)
-        {
-        case SHANNON_FANO:
-        {
-            std::cout << "Decompressing with Shannon-Fano ...\n";
-            txtz::txtz z(txtz::compression_table);
-            auto out_buf = z.decompress(in_buf);
-            std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            std::cout << '\n'
-                      << (8 * in_buf.size()) << " -> " << (8 * out_buf.size()) << '\n';
-            break;
-        }
-        case SMAZ:
-        {
-            std::vector<char> out_buf(SMAZ_SAFETY_MARGIN * in_buf.size());
-            out_len = static_cast<std::size_t>(smaz_decompress(in_buf.data(), static_cast<int>(in_buf.size()), out_buf.data(), static_cast<int>(out_buf.size())));
-            out_buf.resize(static_cast<std::size_t>(out_len));
-            std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
-            break;
-        }
-        default:
-            break;
-        }
+        if (!stats_only_output)
+            std::cout << "Decompressing ...\n";
+        auto out_buf = z.decompress(in_buf);
+        std::copy(std::begin(out_buf), std::end(out_buf), std::ostream_iterator<char>(*out));
+        std::cout << '\n'
+                  << (8 * in_buf.size()) << " -> " << (8 * out_buf.size()) << '\n';
         break;
     }
     case INVALID_OP: // will never be reached

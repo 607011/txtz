@@ -25,6 +25,8 @@
 
 */
 
+#include <sstream>
+
 #include "code.hpp"
 #include "shannon-fano.hpp"
 
@@ -59,10 +61,10 @@ namespace txtz
         bits_ |= code_t(bit) << bitcount_++;
     }
 
-    code code::operator+(bool bit)
+    code operator+(code const &c, int v)
     {
-        code x{*this};
-        x.append(bit);
+        code x{c};
+        x.append(v != 0);
         return x;
     }
 

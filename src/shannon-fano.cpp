@@ -61,8 +61,13 @@ namespace txtz
         shannon_fano(p, pr, r, c + 1);
     }
 
-    void shannon_fano(std::vector<ngram_t> &p)
+    void shannon_fano(std::vector<ngram_t> &p, bool do_sort)
     {
+        if (do_sort)
+        {
+            std::sort(std::begin(p), std::end(p), [](ngram_t const &a, ngram_t const &b)
+                      { return a.weight > b.weight; });
+        }
         shannon_fano(p, 0U, p.size() - 1U, code());
     }
 

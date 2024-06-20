@@ -1,6 +1,6 @@
 /*
 
- Copyright (c) 2023-2024 Oliver Lau <oliver@ersatzworld.net>
+ Copyright (c) 2024 Oliver Lau <oliver@ersatzworld.net>
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
@@ -25,25 +25,23 @@
 
 */
 
-#ifndef __SHANNON_FANO_HPP__
-#define __SHANNON_FANO_HPP__
+#ifndef __HUFFMANN_HPP__
+#define __HUFFMANN_HPP__
 
 #include <vector>
-
 #include "ngram.hpp"
 
 namespace txtz
 {
     /**
-     * Using the Shannon-Fano algorithm, build a binary tree with all of the n-grams given.
+     * Using the Huffman algorithm, build a binary tree with all of the n-grams given.
      *
      * Update `txtz::code` field of each n-gram to reflect
      * the path to the corresponding node in the binary tree.
      *
      * @param p sorted list of n-grams
      */
-    void shannon_fano(std::vector<ngram_t> &, bool do_sort = true);
+    void huffman(std::vector<ngram_t> &ngrams);
+}
 
-} // namespace txtz
-
-#endif
+#endif // namespace txtz

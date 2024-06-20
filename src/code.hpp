@@ -16,7 +16,7 @@ namespace txtz
         code_t bits_;
 
     public:
-        code();
+        code(void);
         code(unsigned long len, code_t bits);
         code(code const &o);
 
@@ -24,7 +24,6 @@ namespace txtz
         unsigned long bitcount(void) const;
         code_t bits(void) const;
         void append(bool bit);
-        code operator+(bool bit);
         std::string str(void) const;
 
         friend std::ostream &operator<<(std::ostream &os, code const &c)
@@ -38,6 +37,8 @@ namespace txtz
             return os;
         }
     };
+
+    code operator+(code const &, int);
 }
 
 #endif

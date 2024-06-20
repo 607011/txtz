@@ -25,7 +25,14 @@
 
 */
 
+#include <algorithm>
+#include <cstddef>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 #include "shannon-fano.hpp"
+#include "huffman.hpp"
 #include "txtz.hpp"
 
 namespace txtz

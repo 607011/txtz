@@ -61,9 +61,15 @@ cmake --build . --config Release
 ```
 
 
-## Usage
+## Remarks
 
-TODO
+By default, Huffman encoding is used to build the binary tree. You can change that to Shannon-Fano encoding by setting `MAPBUILDING_ALGO` to `shannon-fano` instead `huffman` when calling `cmake` to configure the project:
+
+```
+cmake -DMAPBUILDING_ALGO=shannon-fano -DCMAKE_BUILD_TYPE=Release ..
+```
+
+TODO!!!
 
 ## License
 

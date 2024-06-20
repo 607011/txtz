@@ -43,7 +43,10 @@
 #include <glob.h>
 #include <getopt.hpp>
 
+#include "txtz.hpp"
 #include "shannon-fano.hpp"
+#include "huffman.hpp"
+#include "util.hpp"
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -56,6 +59,7 @@ int main(int argc, char *argv[])
 {
     using argparser = argparser::argparser;
     std::string table_name = MAP_FILE;
+    float stop_token_weight_factor = 1e2f;
     bool split_by_phomenes = false;
     char phoneme_delim = '|';
     bool fill_missing_monograms = true;
@@ -208,13 +212,13 @@ int main(int argc, char *argv[])
     }
 
     using pair_type = decltype(tokens)::value_type;
-    auto max_tokens = std::max_element(
+    auto const [max_token, max_weight] = *std::max_element(
         std::begin(tokens), std::end(tokens),
         [](const pair_type &p1, const pair_type &p2)
         {
             return p1.second < p2.second;
         });
-    auto min_tokens = std::min_element(
+    auto const [min_token, min_weight] = *std::min_element(
         std::begin(tokens), std::end(tokens),
         [](const pair_type &p1, const pair_type &p2)
         {
@@ -226,33 +230,51 @@ int main(int argc, char *argv[])
         std::cout << "\nStatistics:\n";
         if (!tokens.empty())
         {
-            std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << max_tokens->first << "`   : " << max_tokens->second << '\n';
+            std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << max_token << "`   : " << max_weight << '\n';
         }
         std::cout << std::endl;
     }
 
     if (fill_missing_monograms)
     {
-        for (uint8_t t = 0U; t < 0xFF; ++t)
-        {
+        auto emplace = [&tokens](uint8_t t, float weight) {
             char c = static_cast<char>(t);
             std::string token(&c, 1);
             if (tokens.find(token) == std::end(tokens))
             {
-                tokens[token] = min_tokens->second / 2;
+                tokens[token] = weight;
             }
+        };
+        for (uint8_t t = 0; t < 32; ++t)
+        {
+            emplace(t, min_weight / 2);
+        }
+        for (uint8_t t = 32; t < 127; ++t)
+        {
+            emplace(t, std::max(min_weight - 1.f, 1.f));
+        }
+        for (uint8_t t = 127; t < 255; ++t)
+        {
+            emplace(t, min_weight / 2);
         }
     }
 
-    tokens["\xff"] = 1e1f * max_tokens->second;
+    // emplace stop token
+    tokens[std::string(&txtz::txtz::STOP_TOKEN, 1)] = stop_token_weight_factor * max_weight;
 
     std::vector<txtz::ngram_t> ngrams;
     std::transform(std::begin(tokens), std::end(tokens), std::back_inserter(ngrams), [](decltype(tokens)::value_type it) -> txtz::ngram_t
                    { return txtz::ngram_t{it.first, it.second}; });
-    std::sort(std::begin(ngrams), std::end(ngrams), [](decltype(ngrams)::value_type a, decltype(ngrams)::value_type b)
-              { return a.weight > b.weight; });
 
+#if defined(ALGO_HUFFMAN)
+    txtz::huffman(ngrams);
+    std::cout << "ALGO_HUFFMAN\n";
+#elif defined(ALGO_SHANNON_FANO)
     txtz::shannon_fano(ngrams);
+    std::cout << "ALGO_SHANNON_FANO\n";
+#else
+#error "Invalid map building algorithm. Define one of ALGO_HUFFMAN or ALGO_SHANNON_FANO!"
+#endif
 
     if (verbosity > 0 && !quiet)
     {
@@ -266,6 +288,8 @@ int main(int argc, char *argv[])
         << "{\n"
         << "  std::unordered_map<std::string, code> compression_table = {\n";
 
+    std::sort(std::begin(ngrams), std::end(ngrams), [](txtz::ngram_t const &a, txtz::ngram_t const &b)
+                { return a.c.bitcount() < b.c.bitcount(); });
     for (auto const &ngram : ngrams)
     {
         cpp << "   {\"" << util::escaped(ngram.token) << "\", code(" << std::dec << ngram.c.bitcount() << ", 0b" << ngram.c.str() << ")},\n";
