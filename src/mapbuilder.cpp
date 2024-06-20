@@ -268,10 +268,8 @@ int main(int argc, char *argv[])
 
 #if defined(ALGO_HUFFMAN)
     txtz::huffman(ngrams);
-    std::cout << "ALGO_HUFFMAN\n";
 #elif defined(ALGO_SHANNON_FANO)
     txtz::shannon_fano(ngrams);
-    std::cout << "ALGO_SHANNON_FANO\n";
 #else
 #error "Invalid map building algorithm. Define one of ALGO_HUFFMAN or ALGO_SHANNON_FANO!"
 #endif
