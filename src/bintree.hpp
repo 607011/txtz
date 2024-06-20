@@ -179,15 +179,15 @@ private:
 
     static void clear(node *root)
     {
+        if (root == nullptr)
+            return;
         if (root->left == nullptr && root->right == nullptr)
         {
             delete root;
             return;
         }
-        if (root->left)
-            clear(root->left);
-        if (root->right)
-            clear(root->right);
+        clear(root->left);
+        clear(root->right);
     }
 };
 
