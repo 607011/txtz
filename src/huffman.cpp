@@ -39,11 +39,13 @@ namespace txtz
     {
         struct huffman_node
         {
-            ngram_t *ngram;
+            ngram_t *ngram{nullptr};
             float weight;
             huffman_node *left{nullptr};
             huffman_node *right{nullptr};
 
+            huffman_node(float weight)
+                : weight(weight) {}
             huffman_node(ngram_t *ngram, float weight)
                 : ngram(ngram), weight(weight) {}
         };
@@ -68,7 +70,7 @@ namespace txtz
             generate_codes(root->right, prefix + 1, ngrams);
         }
 
-        void delete_tree(huffman_node *node)
+        static void delete_tree(huffman_node *node)
         {
             if (node == nullptr)
                 return;
@@ -96,7 +98,7 @@ namespace txtz
             pq.pop();
 
             // Create a new internal node with these two nodes as children
-            huffman_node *top = new huffman_node(nullptr, left->weight + right->weight);
+            huffman_node *top = new huffman_node(left->weight + right->weight);
             top->left = left;
             top->right = right;
 
