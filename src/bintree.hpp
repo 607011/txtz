@@ -181,13 +181,9 @@ private:
     {
         if (root == nullptr)
             return;
-        if (root->left == nullptr && root->right == nullptr)
-        {
-            delete root;
-            return;
-        }
         clear(root->left);
         clear(root->right);
+        delete root;
     }
 };
 
