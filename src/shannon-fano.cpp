@@ -38,19 +38,19 @@ namespace txtz
         }
         std::size_t pl = l;
         std::size_t pr = r;
-        auto wl = p.at(pl).weight;
-        auto wr = p.at(pr).weight;
+        auto weight_left = p.at(pl).weight;
+        auto weight_right = p.at(pr).weight;
         for (;;)
         {
-            while (wr < wl && pr != pl + 1)
+            while (weight_right < weight_left && pr != pl + 1)
             {
                 --pr;
-                wr += p.at(pr).weight;
+                weight_right += p.at(pr).weight;
             }
             if (pr != pl + 1)
             {
                 ++pl;
-                wl += p.at(pl).weight;
+                weight_left += p.at(pl).weight;
             }
             else
             {
