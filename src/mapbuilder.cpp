@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
     char histo_delim = ';';
     bool with_histogram = true;
     bool generate_json = false;
+    bool multiply_by_length = false;
     std::vector<fs::path> input_paths;
     int verbosity{};
     bool quiet = false;
@@ -116,6 +117,12 @@ int main(int argc, char *argv[])
              [&with_histogram](std::string const &)
              {
                  with_histogram = false;
+             })
+        .reg({"--respect-length"}, argparser::no_argument,
+             "A token's frequency will be multiplied by its length in bytes to give its weight.",
+             [&multiply_by_length](std::string const &)
+             {
+                 multiply_by_length = true;
              })
         .reg({"--json"}, argparser::no_argument,
              "Generate JSON map file in addition to C++ map file.",
@@ -196,7 +203,8 @@ int main(int argc, char *argv[])
                     {
                         for (auto const &ph : util::split(word_histo.first, phoneme_delim))
                         {
-                            tokens[ph] += weight /* * ph.size() */;
+                            float const w = weight * (multiply_by_length ? ph.size() : 1.f);
+                            tokens[ph] += w;
                         }
                     }
                     else
@@ -204,7 +212,8 @@ int main(int argc, char *argv[])
                         word_histo.first.erase(std::remove_if(std::begin(word_histo.first), std::end(word_histo.first), [&phoneme_delim](char c)
                                                               { return c == phoneme_delim; }),
                                                std::end(word_histo.first));
-                        tokens[word_histo.first] += weight /* * word_histo.first.size() */;
+                        float const w = weight * (multiply_by_length ? word_histo.first.size() : 1.f);
+                        tokens[word_histo.first] += w;
                     }
                 }
             }
