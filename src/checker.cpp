@@ -40,6 +40,7 @@
 #include "code.hpp"
 #include "txtz.hpp"
 #include "shannon-fano.hpp"
+#include "util.hpp"
 
 namespace fs = std::filesystem;
 
@@ -114,28 +115,31 @@ int main(int argc, char *argv[])
     std::string line;
     while (std::getline(*in, line))
     {
-        auto word_histo = util::unpair(line, histo_delim);
+        auto [token, freq] = util::unpair(line, histo_delim);
+        const auto weight = std::stoull(freq);
         // remove phoneme delimiters
-        word_histo.first.erase(std::remove_if(std::begin(word_histo.first), std::end(word_histo.first), [&phoneme_delim](char c)
-                                              { return c == phoneme_delim; }),
-                               std::end(word_histo.first));
-        const auto weight = std::stoull(word_histo.second);
+        token.erase(std::remove_if(std::begin(token), std::end(token), [&phoneme_delim](char c)
+                                   { return c == phoneme_delim; }),
+                    std::end(token));
         // remove all CR/LF
-        std::string s;
-        std::copy_if(std::begin(word_histo.first), std::end(word_histo.first), std::back_inserter(s), [](char c)
-                     { return c != '\r' && c != '\n'; });
-        std::cout << s << " (" << weight << ") ";
+        token.erase(std::remove_if(std::begin(token), std::end(token), [](char c)
+                                   { return c == '\r' && c == '\n';; }),
+                    std::end(token));
+        std::ostringstream oss;
+        oss << token << " (" << weight << ") ";
+        oss << std::string(30 - util::utf8_char_count(oss.str()), ' ');
         std::size_t sz;
         std::vector<uint8_t> out_buf;
-        out_buf = z.compress(s, sz);
-        sum_compression_rates += float(out_buf.size()) / (float(s.size())) * weight;
+        out_buf = z.compress(token, sz);
+        sum_compression_rates += float(out_buf.size()) / (float(token.size())) * weight;
         rate_count += weight;
-        const std::string &out_word = z.decompress(out_buf);
-        if (out_word == word_histo.first)
+        std::string const &out_token = z.decompress(out_buf);
+        if (out_token == token)
         {
-            std::cout << "\t\u001b[32;1mOK\u001b[0m "
-                      << std::setprecision(3) << 100 * float(out_buf.size()) / (float(s.size()))
-                      << "%\n";
+            std::cout << oss.str()
+                      << "\u001b[32;1mOK\u001b[0m "
+                      << std::setprecision(3) << 1e2f * float(out_buf.size()) / (float(token.size())) << "%"
+                      << "\n";
         }
         else
         {
@@ -143,7 +147,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
     }
-    std::cout << "\nSUCCESS!\n";
-    std::cout << "avg. compression rate: " << 1e2f * sum_compression_rates / rate_count << "%\n";
+    std::cout << "\nSUCCESS!\n"
+              << "avg. compression rate: " << 1e2f * sum_compression_rates / rate_count << "%\n";
     return EXIT_SUCCESS;
 }

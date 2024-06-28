@@ -28,6 +28,7 @@
 #ifndef __UTIL_HPP__
 #define __UTIL_HPP__
 
+#include <cstddef>
 #include <string>
 #include <sstream>
 #include <utility>
@@ -38,6 +39,7 @@ namespace util
     std::string escaped(std::string const &str);
     std::vector<std::string> split(const std::string &str, char delim);
     std::pair<std::string, std::string> unpair(const std::string &str, char delim);
+    std::size_t utf8_char_count(std::string const &s);
 
     template <typename InputIteratorT, typename SeparatorT>
     std::string join(InputIteratorT input, SeparatorT separator)

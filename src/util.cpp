@@ -84,4 +84,17 @@ namespace util
         return strings;
     }
 
+    std::size_t utf8_char_count(std::string const &s)
+    {
+        char *p = const_cast<char *>(s.data());
+        std::size_t count = 0;
+        while (*p != '\0')
+        {
+            if ((*p & 0xc0) != 0x80)
+                ++count;
+            ++p;
+        }
+        return count;
+    }
+
 }
