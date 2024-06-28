@@ -28,14 +28,12 @@
 #include <sstream>
 
 #include "code.hpp"
-#include "shannon-fano.hpp"
-
 
 namespace txtz
 {
     code::code()
         : bitcount_(0), bits_(0) {}
-    code::code(unsigned long len, code_t bits)
+    code::code(std::size_t len, code_t bits)
         : bitcount_(len), bits_(bits) {}
     code::code(code const &o)
         : bitcount_(o.bitcount_), bits_(o.bits_) {}
@@ -46,7 +44,7 @@ namespace txtz
         bits_ = o.bits_;
     }
 
-    unsigned long code::bitcount(void) const
+    std::size_t code::bitcount(void) const
     {
         return bitcount_;
     }
