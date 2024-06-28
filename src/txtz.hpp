@@ -62,7 +62,7 @@ namespace txtz
         /**
          * For decompression a binary tree is needed.
          */
-        bintree<code_t, uint32_t, std::string, uint8_t> decompress_tree_{std::string(&STOP_TOKEN, 1)};
+        bintree decompress_tree_{std::string(&STOP_TOKEN, 1)};
         std::size_t max_token_length_{};
     };
 }

@@ -34,7 +34,6 @@
 
 #include "util.hpp"
 
-template <typename CodeT, typename LengthT, typename ValueT, typename StoreT>
 class bintree
 {
 public:
@@ -42,45 +41,45 @@ public:
     {
         node *left{nullptr};
         node *right{nullptr};
-        ValueT value{};
+        std::string token{};
     };
 
-    bintree(ValueT stop_value) : stop_value_(stop_value) {}
+    bintree(std::string stop_value) : stop_value_(stop_value) {}
 
     ~bintree()
     {
         clear(root_);
     }
 
-    std::string decompress(std::vector<StoreT> const &compressed)
+    std::string decompress(std::vector<uint8_t> const &compressed)
     {
         auto it = std::begin(compressed);
         std::ostringstream oss;
-        node *n = root_;
+        node *current_node = root_;
         int bit_idx = 0;
-        StoreT byte = *it;
+        uint8_t byte = *it;
         for (;;)
         {
             if ((byte & 0b10000000) == 0)
             {
-                if (n->left)
+                if (current_node->left)
                 {
-                    n = n->left;
+                    current_node = current_node->left;
                 }
             }
             else
             {
-                if (n->right)
+                if (current_node->right)
                 {
-                    n = n->right;
+                    current_node = current_node->right;
                 }
             }
-            if (!n->left && !n->right)
+            if (!current_node->left && !current_node->right)
             {
-                if (n->value == stop_value_)
+                if (current_node->token == stop_value_)
                     break;
-                oss << n->value;
-                n = root_;
+                oss << current_node->token;
+                current_node = root_;
             }
             if (++bit_idx == 8)
             {
@@ -98,10 +97,10 @@ public:
     /**
      * @param code
      */
-    void append(CodeT code, LengthT length, ValueT const &token)
+    void append(unsigned long code, unsigned long length, std::string const &token)
     {
-        constexpr CodeT mask = (1ULL << (8 * sizeof(CodeT) - 1));
-        code <<= (8 * sizeof(CodeT) - length);
+        constexpr unsigned long mask = (1ULL << (8 * sizeof(unsigned long) - 1));
+        code <<= (8 * sizeof(unsigned long) - length);
         node *n = root_;
         while (length-- > 0)
         {
@@ -123,14 +122,14 @@ public:
             }
             code <<= 1;
         }
-        n->value = token;
+        n->token = token;
     }
 
-    static bool find(ValueT const &token, const node *const root)
+    static bool find(std::string const &token, const node *const root)
     {
         if (root->left == nullptr && root->right == nullptr)
         {
-            return root->value == token;
+            return root->token == token;
         }
         if (find(token, root->left))
         {
@@ -143,7 +142,7 @@ public:
         return false;
     }
 
-    bool has(ValueT const &token) const
+    bool has(std::string const &token) const
     {
         return find(token, root_);
     }
@@ -152,7 +151,7 @@ public:
     {
         if (root->left == nullptr && root->right == nullptr)
         {
-            out << ' ' << util::escaped(root->value) << '\n';
+            out << ' ' << util::escaped(root->token) << '\n';
         }
         if (root->left)
         {
@@ -175,7 +174,7 @@ public:
 
 private:
     node *root_{new node};
-    ValueT stop_value_;
+    std::string stop_value_;
 
     static void clear(node *root)
     {
