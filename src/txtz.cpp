@@ -25,7 +25,6 @@
 
 */
 
-#include <algorithm>
 #include <cstddef>
 #include <string>
 #include <unordered_map>
@@ -41,12 +40,12 @@ namespace txtz
     txtz::txtz(std::unordered_map<std::string, code> const &table)
         : compress_table_(table)
     {
-        for (auto const &it : compress_table_)
+        for (auto const &[token, code] : compress_table_)
         {
-            decompress_tree_.append(it.second.bits(), it.second.bitcount(), it.first);
-            if (it.first.size() > max_token_length_)
+            decompress_tree_.append(code.bits(), code.bitcount(), token);
+            if (token.size() > max_token_length_)
             {
-                max_token_length_ = it.first.size();
+                max_token_length_ = token.size();
             }
         }
     }
@@ -60,18 +59,18 @@ namespace txtz
         auto chunk_end = std::min(std::begin(uncompressed) + max_len, std::end(uncompressed));
         const auto last = std::end(uncompressed);
         uint8_t byte = 0;
-        long num_bits = 0;
+        std::size_t num_bits = 0;
         int bit_idx = 0;
         while (it < last)
         {
             while (it < chunk_end)
             {
                 std::string token(it, chunk_end);
-                if (compress_table_.find(token) != compress_table_.end())
+                if (auto const &t = compress_table_.find(token); t != std::end(compress_table_))
                 {
-                    code const &c = compress_table_.at(token);
+                    code const &c = t->second;
                     code_t value = c.bits() << (8 * sizeof(code_t) - c.bitcount());
-                    num_bits += static_cast<long>(c.bitcount());
+                    num_bits += c.bitcount();
                     // XXX: slow bit by bit encoder
                     for (std::size_t i = 0; i < c.bitcount(); ++i)
                     {
@@ -80,9 +79,6 @@ namespace txtz
                         if ((value & mask) != 0)
                         {
                             byte |= 1;
-                        }
-                        else
-                        {
                         }
                         value <<= 1;
                         if (++bit_idx == 8)
@@ -117,9 +113,7 @@ namespace txtz
 
     std::string txtz::decompress(std::vector<char> const &data)
     {
-        std::vector<uint8_t> byte_data(data.size());
-        std::transform(std::begin(data), std::end(data), std::begin(byte_data), [](char b) -> uint8_t
-                       { return static_cast<uint8_t>(b); });
+        std::vector<uint8_t> byte_data(std::begin(data), std::end(data));
         return decompress_tree_.decompress(byte_data);
     }
 

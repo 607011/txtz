@@ -25,23 +25,35 @@
 
 */
 
-#ifndef __HUFFMANN_HPP__
-#define __HUFFMANN_HPP__
+#ifndef __NGRAM_HPP__
+#define __NGRAM_HPP__
 
-#include <vector>
-#include "token.hpp"
+#include <string>
+
+#include "code.hpp"
 
 namespace txtz
 {
+
     /**
-     * Using the Huffman algorithm, build a binary tree with all of the n-grams given.
-     *
-     * Update `txtz::code` field of each n-gram to reflect
-     * the path to the corresponding node in the binary tree.
-     *
-     * @param p sorted list of n-grams
+     * A struct representing an n-gram in a binary tree.
      */
-    void huffman(std::vector<token> &ngrams);
+    struct token
+    {
+        /**
+         * The actual string of the n-gram.
+         */
+        std::string token{};
+        /**
+         * The larger the value the more frequent the n-gram is.
+         */
+        float weight{0};
+        /**
+         * Depending on the `weight` of the n-gram a path through
+         * a binary tree down to the n-gram is calculated.
+         */
+        code c;
+    };
 }
 
-#endif // namespace txtz
+#endif

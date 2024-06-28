@@ -30,7 +30,7 @@
 #include <string>
 
 #include "code.hpp"
-#include "ngram.hpp"
+#include "huffman.hpp"
 
 namespace txtz
 {
@@ -39,15 +39,15 @@ namespace txtz
     {
         struct huffman_node
         {
-            ngram_t *ngram{nullptr};
+            token *tok{nullptr};
             float weight;
             huffman_node *left{nullptr};
             huffman_node *right{nullptr};
 
             huffman_node(float weight)
                 : weight(weight) {}
-            huffman_node(ngram_t *ngram, float weight)
-                : ngram(ngram), weight(weight) {}
+            huffman_node(token *tok, float weight)
+                : tok(tok), weight(weight) {}
         };
 
         struct weight_comparator
@@ -58,16 +58,16 @@ namespace txtz
             }
         };
 
-        void generate_codes(const huffman_node *const root, const code &prefix, std::vector<ngram_t> const &ngrams)
+        void generate_codes(const huffman_node *const root, const code &prefix, std::vector<token> const &tokens)
         {
             if (root == nullptr)
                 return;
-            if (root->ngram != nullptr)
+            if (root->tok != nullptr)
             {
-                root->ngram->c = prefix;
+                root->tok->c = prefix;
             }
-            generate_codes(root->left, prefix + 0, ngrams);
-            generate_codes(root->right, prefix + 1, ngrams);
+            generate_codes(root->left, prefix + 0, tokens);
+            generate_codes(root->right, prefix + 1, tokens);
         }
 
         static void delete_tree(huffman_node *node)
@@ -80,13 +80,13 @@ namespace txtz
         }
     }
 
-    void huffman(std::vector<ngram_t> &ngrams)
+    void huffman(std::vector<token> &tokens)
     {
         std::priority_queue<huffman_node *, std::vector<huffman_node *>, weight_comparator> pq;
 
-        for (auto &ngram : ngrams)
+        for (auto &token : tokens)
         {
-            pq.push(new huffman_node(&ngram, ngram.weight));
+            pq.push(new huffman_node(&token, token.weight));
         }
 
         while (pq.size() > 1)
@@ -106,7 +106,7 @@ namespace txtz
         }
 
         // Now pq contains only the root of the Huffman tree
-        generate_codes(pq.top(), code{}, ngrams);
+        generate_codes(pq.top(), code{}, tokens);
         delete_tree(pq.top());
     }
 }

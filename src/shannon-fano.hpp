@@ -30,7 +30,7 @@
 
 #include <vector>
 
-#include "ngram.hpp"
+#include "token.hpp"
 
 namespace txtz
 {
@@ -40,9 +40,9 @@ namespace txtz
      * Update `txtz::code` field of each n-gram to reflect
      * the path to the corresponding node in the binary tree.
      *
-     * @param p sorted list of n-grams
+     * @param p list of tokens
      */
-    void shannon_fano(std::vector<ngram_t> &, bool do_sort = true);
+    void shannon_fano(std::vector<token> &p);
 
 } // namespace txtz
 

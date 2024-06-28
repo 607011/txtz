@@ -44,8 +44,11 @@
 #include <getopt.hpp>
 
 #include "txtz.hpp"
+#if defined(ALGO_SHANNON_FANO)
 #include "shannon-fano.hpp"
+#elif defined(ALGO_HUFFMAN)
 #include "huffman.hpp"
+#endif
 #include "util.hpp"
 
 using json = nlohmann::json;
@@ -59,7 +62,6 @@ int main(int argc, char *argv[])
 {
     using argparser = argparser::argparser;
     std::string table_name = MAP_FILE;
-    float stop_token_weight_factor = 1e2f;
     bool split_by_phomenes = false;
     char phoneme_delim = '|';
     bool fill_missing_monograms = true;
@@ -157,7 +159,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    std::unordered_map<std::string, float> tokens;
+    std::unordered_map<std::string, float> histo;
     for (auto const &input_path : input_paths)
     {
         auto filenames = glob::glob(input_path.string());
@@ -204,7 +206,7 @@ int main(int argc, char *argv[])
                         for (auto const &ph : util::split(word_histo.first, phoneme_delim))
                         {
                             float const w = weight * (multiply_by_length ? ph.size() : 1.f);
-                            tokens[ph] += w;
+                            histo[ph] += w;
                         }
                     }
                     else
@@ -213,50 +215,49 @@ int main(int argc, char *argv[])
                                                               { return c == phoneme_delim; }),
                                                std::end(word_histo.first));
                         float const w = weight * (multiply_by_length ? word_histo.first.size() : 1.f);
-                        tokens[word_histo.first] += w;
+                        histo[word_histo.first] += w;
                     }
                 }
             }
         }
     }
 
-    using pair_type = decltype(tokens)::value_type;
-    auto const [max_token, max_weight] = *std::max_element(
-        std::begin(tokens), std::end(tokens),
-        [](const pair_type &p1, const pair_type &p2)
-        {
-            return p1.second < p2.second;
-        });
-    auto const [min_token, min_weight] = *std::min_element(
-        std::begin(tokens), std::end(tokens),
-        [](const pair_type &p1, const pair_type &p2)
-        {
-            return p1.second < p2.second;
-        });
+    std::string min_token, max_token;
+    float min_weight = std::numeric_limits<float>::max();
+    float max_weight = std::numeric_limits<float>::min();
+    float cum_weight = 0;
+    for (auto const &[token, weight]: histo)
+    {
+        cum_weight += weight;
+        if (weight > max_weight)
+            max_weight = weight;
+        if (weight < min_weight)
+            min_weight = weight;
+    }
 
     if (verbosity > 0 && !quiet)
     {
         std::cout << "\nStatistics:\n";
-        if (!tokens.empty())
+        if (!histo.empty())
         {
-            std::cout << " - " << std::setw(6) << tokens.size() << " phonemes; max. `" << max_token << "`   : " << max_weight << '\n';
+            std::cout << " - " << std::setw(6) << histo.size() << " phonemes; max. `" << max_token << "`   : " << max_weight << '\n';
         }
         std::cout << std::endl;
     }
 
     if (fill_missing_monograms)
     {
-        auto emplace = [&tokens](uint8_t t, float weight) {
+        auto emplace = [&histo](uint8_t t, float weight) {
             char c = static_cast<char>(t);
             std::string token(&c, 1);
-            if (tokens.find(token) == std::end(tokens))
+            if (histo.find(token) == std::end(histo))
             {
-                tokens[token] = weight;
+                histo[token] = weight;
             }
         };
         for (uint8_t t = 0; t < 32; ++t)
         {
-            emplace(t, min_weight / 2);
+            emplace(t, min_weight / 5);
         }
         for (uint8_t t = 32; t < 127; ++t)
         {
@@ -264,21 +265,21 @@ int main(int argc, char *argv[])
         }
         for (uint8_t t = 127; t < 255; ++t)
         {
-            emplace(t, min_weight / 2);
+            emplace(t, min_weight / 7);
         }
     }
 
     // emplace stop token
-    tokens[std::string(&txtz::txtz::STOP_TOKEN, 1)] = stop_token_weight_factor * max_weight;
+    histo[std::string(&txtz::txtz::STOP_TOKEN, 1)] = 1e4f * cum_weight;
 
-    std::vector<txtz::ngram_t> ngrams;
-    std::transform(std::begin(tokens), std::end(tokens), std::back_inserter(ngrams), [](decltype(tokens)::value_type it) -> txtz::ngram_t
-                   { return txtz::ngram_t{it.first, it.second}; });
+    std::vector<txtz::token> tokens;
+    std::transform(std::begin(histo), std::end(histo), std::back_inserter(tokens), [](std::pair<std::string, float> it)
+                   { return txtz::token{it.first, it.second}; });
 
 #if defined(ALGO_HUFFMAN)
-    txtz::huffman(ngrams);
+    txtz::huffman(tokens);
 #elif defined(ALGO_SHANNON_FANO)
-    txtz::shannon_fano(ngrams);
+    txtz::shannon_fano(tokens);
 #else
 #error "Invalid map building algorithm. Define one of ALGO_HUFFMAN or ALGO_SHANNON_FANO!"
 #endif
@@ -295,11 +296,11 @@ int main(int argc, char *argv[])
         << "{\n"
         << "  std::unordered_map<std::string, code> compression_table = {\n";
 
-    std::sort(std::begin(ngrams), std::end(ngrams), [](txtz::ngram_t const &a, txtz::ngram_t const &b)
+    std::sort(std::begin(tokens), std::end(tokens), [](txtz::token const &a, txtz::token const &b)
                 { return a.c.bitcount() < b.c.bitcount(); });
-    for (auto const &ngram : ngrams)
+    for (auto const &token : tokens)
     {
-        cpp << "   {\"" << util::escaped(ngram.token) << "\", code(" << std::dec << ngram.c.bitcount() << ", 0b" << ngram.c.str() << ")},\n";
+        cpp << "   {\"" << util::escaped(token.token) << "\", code(" << std::dec << token.c.bitcount() << ", 0b" << token.c.str() << ")},\n";
     }
     cpp << "  };\n"
         << "}\n";
@@ -309,12 +310,12 @@ int main(int argc, char *argv[])
     if (generate_json)
     {
         json result;
-        for (auto const &ngram : ngrams)
+        for (auto const &token : tokens)
         {
-            result["decompress"][ngram.c.str()] = util::escaped(ngram.token);
-            result["compress"][util::escaped(ngram.token)] = json::object_t{
-                {"l", ngram.c.bitcount()},
-                {"v", ngram.c.bits()}};
+            result["decompress"][token.c.str()] = util::escaped(token.token);
+            result["compress"][util::escaped(token.token)] = json::object_t{
+                {"l", token.c.bitcount()},
+                {"v", token.c.bits()}};
         }
         std::ofstream out(table_name + ".json", std::ios::binary | std::ios::trunc);
         out << result.dump(2);
@@ -322,9 +323,9 @@ int main(int argc, char *argv[])
 
     if (verbosity > 1 && !quiet)
     {
-        for (auto const &ngram : ngrams)
+        for (auto const &token : tokens)
         {
-            std::cout << ngram.token << ": " << ngram.weight << ' ' << ngram.c << '\n';
+            std::cout << token.token << ": " << token.weight << ' ' << token.c << '\n';
         }
     }
 

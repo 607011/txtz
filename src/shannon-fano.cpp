@@ -29,7 +29,7 @@
 
 namespace txtz
 {
-    void shannon_fano(std::vector<ngram_t> &p, std::size_t l, std::size_t r, code c)
+    void sf_split(std::vector<token> &p, std::size_t l, std::size_t r, code c)
     {
         if (l == r)
         {
@@ -40,6 +40,9 @@ namespace txtz
         std::size_t pr = r;
         auto weight_left = p.at(pl).weight;
         auto weight_right = p.at(pr).weight;
+        // split samples into two roughly equivalent sections
+        // so that the weights of the left and right section
+        // are as balanced as possible
         for (;;)
         {
             while (weight_right < weight_left && pr != pl + 1)
@@ -47,28 +50,18 @@ namespace txtz
                 --pr;
                 weight_right += p.at(pr).weight;
             }
-            if (pr != pl + 1)
-            {
-                ++pl;
-                weight_left += p.at(pl).weight;
-            }
-            else
-            {
+            if (pr == pl + 1)
                 break;
-            }
+            ++pl;
+            weight_left += p.at(pl).weight;
         }
-        shannon_fano(p, l, pl, c + 0);
-        shannon_fano(p, pr, r, c + 1);
+        sf_split(p, l, pl, c + 0);
+        sf_split(p, pr, r, c + 1);
     }
 
-    void shannon_fano(std::vector<ngram_t> &p, bool do_sort)
+    void shannon_fano(std::vector<token> &p)
     {
-        if (do_sort)
-        {
-            std::sort(std::begin(p), std::end(p), [](ngram_t const &a, ngram_t const &b)
-                      { return a.weight > b.weight; });
-        }
-        shannon_fano(p, 0U, p.size() - 1U, code());
+        sf_split(p, 0U, p.size() - 1U, code());
     }
 
 }
