@@ -29,6 +29,7 @@
 #define __TXTZ_HPP__
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
 
