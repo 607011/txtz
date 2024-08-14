@@ -26,6 +26,7 @@
 */
 
 #include "shannon-fano.hpp"
+#include <algorithm>
 
 namespace txtz
 {
