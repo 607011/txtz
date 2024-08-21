@@ -27,6 +27,8 @@
 
 #include "shannon-fano.hpp"
 
+#include <algorithm>
+
 namespace txtz
 {
     void shannon_fano(std::vector<ngram_t> &p, std::size_t l, std::size_t r, code c)
