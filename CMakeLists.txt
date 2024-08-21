@@ -21,7 +21,7 @@ if (UNIX)
 endif (UNIX)
 
 if (MSVC)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /wd4365 /wd4710 /wd4711")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /wd4623 /wd4061 /wd4625 /wd4626 /wd5039 /wd5027 /wd4514 /wd4820 /wd4668 /wd5045 /wd4866 /wd4365 /wd4710 /wd4711")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} /Od")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} /O2")
 endif (MSVC)
@@ -37,7 +37,7 @@ include_directories(
 add_custom_command(
 	DEPENDS mapbuilder
     OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
-    COMMAND ./mapbuilder --quiet --map-file "${CMAKE_CURRENT_SOURCE_DIR}/src/mappings" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME1}" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME2}"
+    COMMAND mapbuilder --quiet --map-file "${CMAKE_CURRENT_SOURCE_DIR}/src/mappings" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME1}" --input "${CMAKE_CURRENT_SOURCE_DIR}/${HISTO_FILENAME2}"
 )
 
 add_custom_target(GenerateMap DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp)
@@ -52,7 +52,7 @@ endif()
 add_executable(txtz
   src/txtz-main.cpp
   src/txtz.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
+  src/mappings.cpp
   src/code.cpp
   src/shannon-fano.cpp
   src/huffman.cpp
@@ -62,7 +62,7 @@ add_executable(txtz
 add_executable(checker
   src/checker.cpp
   src/txtz.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/mappings.cpp
+  src/mappings.cpp
   src/code.cpp
   src/shannon-fano.cpp
   src/huffman.cpp

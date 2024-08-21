@@ -282,18 +282,16 @@ int main(int argc, char *argv[])
     cpp << "#include <string>\n"
         << "#include <unordered_map>\n"
         << "#include \"code.hpp\"\n"
-        << "namespace txtz\n"
-        << "{\n"
-        << "  std::unordered_map<std::string, code> compression_table = {\n";
+        << "namespace txtz {\n"
+        << "    std::unordered_map<std::string, code> compression_table = {\n";
 
     std::sort(std::begin(ngrams), std::end(ngrams), [](txtz::ngram_t const &a, txtz::ngram_t const &b)
                 { return a.c.bitcount() < b.c.bitcount(); });
     for (auto const &ngram : ngrams)
     {
-        cpp << "   {\"" << util::escaped(ngram.token) << "\", code(" << std::dec << ngram.c.bitcount() << ", 0b" << ngram.c.str() << ")},\n";
+        cpp << "      {\"" << util::escaped(ngram.token) << "\", code(" << std::dec << ngram.c.bitcount() << ", 0b" << ngram.c.str() << ")},\n";
     }
-    cpp << "  };\n"
-        << "}\n";
+    cpp << "};\n}\n";
     std::ofstream cppout(table_name + ".cpp", std::ios::binary | std::ios::trunc);
     cppout << cpp.str();
 

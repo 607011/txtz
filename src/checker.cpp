@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         std::size_t sz;
         std::vector<uint8_t> out_buf;
         out_buf = z.compress(s, sz);
-        sum_compression_rates += float(out_buf.size()) / (float(s.size())) * weight;
+        sum_compression_rates += float(out_buf.size()) / (float(s.size())) * float(weight);
         rate_count += weight;
         const std::string &out_word = z.decompress(out_buf);
         if (out_word == word_histo.first)
@@ -144,6 +144,6 @@ int main(int argc, char *argv[])
         }
     }
     std::cout << "\nSUCCESS!\n";
-    std::cout << "avg. compression rate: " << 1e2f * sum_compression_rates / rate_count << "%\n";
+    std::cout << "avg. compression rate: " << 1e2f * sum_compression_rates / float(rate_count) << "%\n";
     return EXIT_SUCCESS;
 }
