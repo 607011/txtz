@@ -23,7 +23,7 @@ sudo apt install g++ libboost-all-dev
 ```
 git clone https://github.com/607011/txtz.git
 cd txtz
-git submodule update init
+git submodule update --init
 git submodule update --remote --merge
 mkdir build
 cd build
@@ -36,7 +36,7 @@ cmake --build .
 ```
 git clone https://github.com/607011/txtz.git
 cd txtz
-git submodule update init
+git submodule update --init
 git submodule update --remote --merge
 mkdir build
 cd build
@@ -52,7 +52,7 @@ In Visual Studio Developer Console:
 ```
 git clone https://github.com/607011/txtz.git
 cd txtz
-git submodule update init
+git submodule update --init
 git submodule update --remote --merge
 md build
 cd build
